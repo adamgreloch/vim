@@ -56,6 +56,7 @@ set background=dark
 
 set guioptions-=T
 set lines=50 columns=100
+set guifont=Monospace\ 12
 
 if v:progname =~? "evim"
   finish
