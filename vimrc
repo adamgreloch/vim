@@ -1,3 +1,7 @@
+if has('win32') || has('win64')
+    set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
+endif
+
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
@@ -18,7 +22,6 @@ Plugin 'VundleVim/Vundle.vim'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
-" Plugin 'tpope/vim-fugitive'
 " plugin from http://vim-scripts.org/vim/scripts.html
 " Plugin 'L9'
 " Git plugin not hosted on GitHub
@@ -32,6 +35,7 @@ Plugin 'VundleVim/Vundle.vim'
 " different version somewhere else.
 " Plugin 'ascenator/L9', {'name': 'newL9'}
 
+Plugin 'tpope/vim-fugitive'
 Plugin 'morhetz/gruvbox'
 
 " All of your Plugins must be added before the following line
@@ -56,7 +60,16 @@ set background=dark
 
 set guioptions-=T
 set lines=50 columns=100
-set guifont=Monospace\ 12
+
+if has('win32') || has('win64')
+	set guifont=Meslo_LG_S:h12:cEASTEUROPE:qDRAFT
+else
+	set guifont=Monospace\ 12
+endif
+
+" Disable bells
+set noerrorbells visualbell t_vb=
+autocmd GUIEnter * set visualbell t_vb=
 
 if v:progname =~? "evim"
   finish
