@@ -35,6 +35,7 @@ Plugin 'VundleVim/Vundle.vim'
 " different version somewhere else.
 " Plugin 'ascenator/L9', {'name': 'newL9'}
 
+Plugin 'jceb/vim-orgmode'
 Plugin 'tpope/vim-fugitive'
 Plugin 'morhetz/gruvbox'
 
@@ -59,6 +60,9 @@ autocmd vimenter * colorscheme gruvbox
 set background=dark
 
 set guioptions-=T
+set guioptions-=r  
+set guioptions-=L 
+
 set lines=50 columns=100
 
 if has('win32') || has('win64')
@@ -70,6 +74,18 @@ endif
 " Disable bells
 set noerrorbells visualbell t_vb=
 autocmd GUIEnter * set visualbell t_vb=
+
+" Set UTF-8 encoding
+set encoding=utf-8
+set fileencoding=utf-8
+
+" Set language to English
+language en 
+
+inoremap <C-k> <C-o>gk
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
+inoremap <C-j> <C-o>gj
 
 if v:progname =~? "evim"
   finish
