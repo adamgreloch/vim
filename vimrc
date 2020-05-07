@@ -1,9 +1,22 @@
+" Setup {{{
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+set foldmethod=marker
+
+" Set UTF-8 encoding
+set encoding=utf-8
+set fileencoding=utf-8
+" }}}
+" Windows-specific settings {{{
+
 if has('win32') || has('win64')
+language en 
     set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
 endif
 
-set nocompatible              " be iMproved, required
-filetype off                  " required
+" }}}
+" Vundle config {{{
 
 "Vundle bootstrap
 if !filereadable($HOME . '/.vim/bundle/Vundle.vim/.git/config') && confirm("Clone Vundle?","Y\nn") == 1
@@ -35,7 +48,6 @@ Plugin 'VundleVim/Vundle.vim'
 " different version somewhere else.
 " Plugin 'ascenator/L9', {'name': 'newL9'}
 
-Plugin 'jceb/vim-orgmode'
 Plugin 'tpope/vim-fugitive'
 Plugin 'morhetz/gruvbox'
 
@@ -56,42 +68,43 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
+" }}}
+" Theme {{{
 autocmd vimenter * colorscheme gruvbox
 set background=dark
-
+" }}}
+" GUI tweaks {{{
 set guioptions-=T
 set guioptions-=r  
 set guioptions-=L 
-
+set guioptions-=m
 set lines=50 columns=100
 
+" Disable bells
+set noerrorbells visualbell t_vb=
+autocmd GUIEnter * set visualbell t_vb=
+" }}}
+" Set gVim font {{{
 if has('win32') || has('win64')
 	set guifont=Meslo_LG_S:h12:cEASTEUROPE:qDRAFT
 else
 	set guifont=Monospace\ 12
 endif
-
-" Disable bells
-set noerrorbells visualbell t_vb=
-autocmd GUIEnter * set visualbell t_vb=
-
-" Set UTF-8 encoding
-set encoding=utf-8
-set fileencoding=utf-8
-
-" Set language to English
-language en 
-
-inoremap <C-k> <C-o>gk
-inoremap <C-h> <Left>
-inoremap <C-l> <Right>
-inoremap <C-j> <C-o>gj
-
-if v:progname =~? "evim"
-  finish
-endif
-
-" Get the defaults that most users want.
+" }}}
+" Bindings {{{
+	" Cursor movement in INSERT {{{
+	inoremap <C-k> <C-o>gk
+	inoremap <C-h> <Left>
+	inoremap <C-l> <Right>
+	inoremap <C-j> <C-o>gj
+	" }}}
+" }}}
+" Code related settings {{{
+" On pressing tab, insert 2 spaces
+set tabstop=2
+set shiftwidth=2 
+" }}}
+" Defaults {{{
 source $VIMRUNTIME/defaults.vim
 
 if has("vms")
@@ -102,26 +115,4 @@ else
     set undofile	" keep an undo file (undo changes after closing)
   endif
 endif
-
-if &t_Co > 2 || has("gui_running")
-  " Switch on highlighting the last used search pattern.
-  set hlsearch
-endif
-
-" Put these in an autocmd group, so that we can delete them easily.
-augroup vimrcEx
-  au!
-
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
-augroup END
-
-" Add optional packages.
-"
-" The matchit plugin makes the % command work better, but it is not backwards
-" compatible.
-" The ! means the package won't be loaded right away but when plugins are
-" loaded during initialization.
-if has('syntax') && has('eval')
-  packadd! matchit
-endif
+" }}}
