@@ -12,6 +12,14 @@ set foldmethod=marker
 
 set textwidth=80
 
+if empty(glob('~/.vim/tmp'))
+    silent !mkdir -p ~/.vim/tmp
+endif
+
+set backupdir=~/.vim/tmp//
+set directory=~/.vim/tmp//
+set undodir=~/.vim/tmp//
+
 " }}}
 " Language {{{
 language en_US.utf8
@@ -66,6 +74,7 @@ Plugin 'jceb/vim-orgmode'
 Plugin 'reedes/vim-pencil'
 Plugin 'tpope/vim-fugitive'
 Plugin 'morhetz/gruvbox'
+Plugin 'junegunn/goyo.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -116,6 +125,7 @@ nnoremap <leader>w <esc>:w<cr>
 nnoremap <leader>e :w!<cr>:e %:h<cr>
 nnoremap <leader>ov :e ~\.vim\vimrc<cr>
 nnoremap <leader>p "+p<cr>
+nnoremap <leader>g :Goyo<cr>
 inoremap <leader>w <esc>:w<cr>a
 inoremap <leader>p <esc>"+p<cr>a
 " }}}
