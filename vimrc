@@ -13,21 +13,23 @@ set foldmethod=marker
 set textwidth=80
 
 if empty(glob('~/.vim/tmp'))
-    silent !mkdir -p ~/.vim/tmp
+	silent !mkdir -p ~/.vim/tmp
 endif
 
 set backupdir=~/.vim/tmp//
 set directory=~/.vim/tmp//
 set undodir=~/.vim/tmp//
 
-" }}}
+	" }}}
 " Language {{{
 language en_US.utf8
-language time pl_PL
+" }}}
+" Linux-specific settings {{{
+language time pl_PL.utf8
 " }}}
 " Windows-specific settings {{{
-
 if has('win32') || has('win64')
+	language time pl_PL
 	set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
 	nnoremap <leader><F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
 endif
@@ -123,17 +125,17 @@ set diffopt+=vertical
 nnoremap <leader>n <esc>:NERDTree %:h<cr>
 nnoremap <leader>w <esc>:w<cr>
 nnoremap <leader>e :w!<cr>:e %:h<cr>
-nnoremap <leader>ov :e ~\.vim\vimrc<cr>
+nnoremap <leader>ov :e ~/.vim/vimrc<cr>
 nnoremap <leader>p "+p<cr>
 nnoremap <leader>g :Goyo<cr>
 inoremap <leader>w <esc>:w<cr>a
 inoremap <leader>p <esc>"+p<cr>a
 " }}}
 " FZF {{{
-nnoremap <silent> <leader>o :FZF <CR>
-nnoremap <silent> <leader>oh :FZF ~<CR>
-nnoremap <silent> <leader>op :FZF --preview 'cat {}'<CR>
-nnoremap <silent> <leader>og :FZF ~/git <CR>
+" let $FZF_DEFAULT_COMMAND = 'ag -g ""'
+nnoremap <silent> <leader>o :Files<CR>
+nnoremap <silent> <leader>oh :Files ~<CR>
+nnoremap <silent> <leader>og :Files ~/git/<CR>
 let g:fzf_layout = { 'down': '~40%' }
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
