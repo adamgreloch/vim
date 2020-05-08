@@ -1,6 +1,8 @@
 " Setup {{{
 set nocompatible              " be iMproved, required
-filetype off                  " required
+filetype plugin on
+syntax on
+autocmd!
 
 set foldmethod=marker
 
@@ -8,10 +10,12 @@ set foldmethod=marker
 set encoding=utf-8
 set fileencoding=utf-8
 " }}}
+" Language {{{
+language en_US.utf8
+" }}}
 " Windows-specific settings {{{
 
 if has('win32') || has('win64')
-language en 
     set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
 endif
 
@@ -48,6 +52,9 @@ Plugin 'VundleVim/Vundle.vim'
 " different version somewhere else.
 " Plugin 'ascenator/L9', {'name': 'newL9'}
 
+Plugin 'vimwiki/vimwiki'
+Plugin 'jceb/vim-orgmode'
+Plugin 'reedes/vim-pencil'
 Plugin 'tpope/vim-fugitive'
 Plugin 'morhetz/gruvbox'
 
@@ -91,6 +98,12 @@ else
 	set guifont=Monospace\ 12
 endif
 " }}}
+" Leaders {{{
+inoremap <leader>w <esc>:w<cr>a
+" }}}
+" Misc {{{
+nnoremap z<Space> za
+" }}}
 " Bindings {{{
 	" Cursor movement in INSERT {{{
 	inoremap <C-k> <C-o>gk
@@ -103,6 +116,21 @@ endif
 " On pressing tab, insert 2 spaces
 set tabstop=2
 set shiftwidth=2 
+" }}}
+" Writing text {{{
+" Initialize Pencil based on file types
+augroup pencil
+  autocmd!
+	autocmd FileType org          call pencil#init()
+  autocmd FileType markdown,mkd call pencil#init()
+  autocmd FileType text         call pencil#init()
+augroup END
+" }}}
+" Journal {{{
+autocmd BufNewFile *.jrnl $pu!=strftime('%A, %d.%m.%y')
+"if !empty(glob("~/Dropbox/test/"))
+"	echo "yes"
+"endif
 " }}}
 " Defaults {{{
 source $VIMRUNTIME/defaults.vim
