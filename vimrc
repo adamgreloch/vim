@@ -1,26 +1,31 @@
 " Setup {{{
 set nocompatible              " be iMproved, required
 filetype plugin on
-syntax on
 autocmd!
+
+syntax on
+" Set UTF-8 encoding
+set encoding=utf8
+"set fileencoding=utf8
 
 set foldmethod=marker
 
-" Set UTF-8 encoding
-set encoding=utf-8
-set fileencoding=utf-8
+set textwidth=80
+
 " }}}
 " Language {{{
 language en_US.utf8
+language time pl_PL
 " }}}
 " Windows-specific settings {{{
 
 if has('win32') || has('win64')
-    set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
+	set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
+	nnoremap <leader><F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
 endif
 
 " }}}
-" Vundle config {{{
+" Vundle config {{{ 
 
 "Vundle bootstrap
 if !filereadable($HOME . '/.vim/bundle/Vundle.vim/.git/config') && confirm("Clone Vundle?","Y\nn") == 1
@@ -52,6 +57,10 @@ Plugin 'VundleVim/Vundle.vim'
 " different version somewhere else.
 " Plugin 'ascenator/L9', {'name': 'newL9'}
 
+Plugin 'junegunn/fzf'
+Plugin 'junegunn/fzf.vim'
+Plugin 'preservim/nerdtree'
+Plugin 'derekmcloughlin/gvimfullscreen_win32'
 Plugin 'vimwiki/vimwiki'
 Plugin 'jceb/vim-orgmode'
 Plugin 'reedes/vim-pencil'
@@ -98,11 +107,54 @@ else
 	set guifont=Monospace\ 12
 endif
 " }}}
+" Version Control {{{
+set diffopt+=vertical
+" }}}
 " Leaders {{{
+nnoremap <leader>n <esc>:NERDTree %:h<cr>
+nnoremap <leader>w <esc>:w<cr>
+nnoremap <leader>e :w!<cr>:e %:h<cr>
+nnoremap <leader>ov :e ~\.vim\vimrc<cr>
+nnoremap <leader>p "+p<cr>
 inoremap <leader>w <esc>:w<cr>a
+inoremap <leader>p <esc>"+p<cr>a
+" }}}
+" FZF {{{
+nnoremap <silent> <leader>o :FZF <CR>
+nnoremap <silent> <leader>oh :FZF ~<CR>
+nnoremap <silent> <leader>op :FZF --preview 'cat {}'<CR>
+nnoremap <silent> <leader>og :FZF ~/git <CR>
+let g:fzf_layout = { 'down': '~40%' }
+let g:fzf_colors =
+\ { 'fg':      ['fg', 'Normal'],
+  \ 'bg':      ['bg', 'Normal'],
+  \ 'hl':      ['fg', 'Comment'],
+  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+  \ 'hl+':     ['fg', 'Statement'],
+  \ 'info':    ['fg', 'PreProc'],
+  \ 'border':  ['fg', 'Ignore'],
+  \ 'prompt':  ['fg', 'Conditional'],
+  \ 'pointer': ['fg', 'Exception'],
+  \ 'marker':  ['fg', 'Keyword'],
+  \ 'spinner': ['fg', 'Label'],
+  \ 'header':  ['fg', 'Comment'] }
 " }}}
 " Misc {{{
 nnoremap z<Space> za
+
+" Some format options
+au FileType vim set fo-=c fo-=r fo-=o 
+
+" Add/check for last line break
+function! AddLastLine()
+    if getline('$') !~ "^$"
+        call append(line('$'), '')
+    endif
+endfunction
+
+autocmd BufWritePre * call AddLastLine()
+
 " }}}
 " Bindings {{{
 	" Cursor movement in INSERT {{{
@@ -121,26 +173,23 @@ set shiftwidth=2
 " Initialize Pencil based on file types
 augroup pencil
   autocmd!
+	autocmd FileType tex					call pencil#init()
 	autocmd FileType org          call pencil#init()
   autocmd FileType markdown,mkd call pencil#init()
   autocmd FileType text         call pencil#init()
 augroup END
+
 " }}}
 " Journal {{{
-autocmd BufNewFile *.jrnl $pu!=strftime('%A, %d.%m.%y')
-"if !empty(glob("~/Dropbox/test/"))
-"	echo "yes"
-"endif
-" }}}
-" Defaults {{{
-source $VIMRUNTIME/defaults.vim
+function! JournalOpen() 
+    return ':e ~/Dropbox/vimjrnl/'.strftime('%Y%m%d').'.md'
+endfunction
 
-if has("vms")
-  set nobackup		" do not keep a backup file, use versions instead
-else
-  set backup		" keep a backup file (restore to previous version)
-  if has('persistent_undo')
-    set undofile	" keep an undo file (undo changes after closing)
-  endif
-endif
+nnoremap <expr> <leader>oj JournalOpen() 
+
+autocmd BufNewFile ~/Dropbox/vimjrnl/* :$pu!=strftime('# %A, %d.%m.%y')
+autocmd BufNewFile ~/Dropbox/vimjrnl/* :$pu=strftime('## %H:%M ') | :normal GA
+autocmd BufRead ~/Dropbox/vimjrnl/* $pu=strftime('## %H:%M ') | :normal GA
+" autocmd BufReadPost ~/Dropbox/test/* :normal GA
 " }}}
+
