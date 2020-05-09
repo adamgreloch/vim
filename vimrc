@@ -190,6 +190,8 @@ set shiftwidth=2
 " Writing text {{{
 " Initialize Pencil based on file types
 
+au! BufRead,BufNewFile *.org            setfiletype org
+
 let g:pencil#autoformat_blacklist = [
         \ 'markdownCode',
         \ 'markdownUrl',
@@ -217,7 +219,7 @@ let g:pencil#autoformat_blacklist = [
 augroup pencil
   autocmd!
 	autocmd FileType tex					call pencil#init({'wrap': 'soft'})
-	autocmd FileType org          call pencil#init()
+	autocmd FileType org					call pencil#init()
   autocmd FileType markdown,mkd call pencil#init()
   autocmd FileType text         call pencil#init()
 augroup END
