@@ -11,6 +11,7 @@ set encoding=utf8
 set foldmethod=marker
 
 set textwidth=80
+set clipboard=unnamed
 
 if empty(glob('~/.vim/tmp'))
 	silent !mkdir -p ~/.vim/tmp
@@ -77,6 +78,9 @@ Plugin 'reedes/vim-pencil'
 Plugin 'tpope/vim-fugitive'
 Plugin 'morhetz/gruvbox'
 Plugin 'junegunn/goyo.vim'
+Plugin 'lambdalisue/vim-fullscreen'
+Plugin 'lervag/vimtex'
+Plugin 'SirVer/ultisnips'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -105,7 +109,7 @@ set guioptions-=T
 set guioptions-=r  
 set guioptions-=L 
 set guioptions-=m
-set lines=50 columns=100
+"set lines=50 columns=100
 
 " Disable bells
 set noerrorbells visualbell t_vb=
@@ -169,7 +173,9 @@ autocmd BufWritePre * call AddLastLine()
 
 " }}}
 " Bindings {{{
-	" Cursor movement in INSERT {{{
+	" Cursor movement {{{
+	nnoremap k gk
+	nnoremap j gj
 	inoremap <C-k> <C-o>gk
 	inoremap <C-h> <Left>
 	inoremap <C-l> <Right>
@@ -183,13 +189,47 @@ set shiftwidth=2
 " }}}
 " Writing text {{{
 " Initialize Pencil based on file types
+
+let g:pencil#autoformat_blacklist = [
+        \ 'markdownCode',
+        \ 'markdownUrl',
+        \ 'markdownIdDeclaration',
+        \ 'markdownLinkDelimiter',
+        \ 'markdownHighlight[A-Za-z0-9]+',
+        \ 'mkdCode',
+        \ 'mkdIndentCode',
+        \ 'markdownFencedCodeBlock',
+        \ 'markdownInlineCode',
+        \ 'mmdTable[A-Za-z0-9]*',
+        \ 'txtCode',
+        \ 'texAbstract',
+        \ 'texBeginEndName',
+        \ 'texDelimiter',
+        \ 'texDocType',
+        \ 'texInputFile',
+        \ 'texMath',
+        \ 'texRefZone',
+        \ 'texSection$',
+        \ 'texStatement',
+        \ 'texTitle',
+        \ ]
+
 augroup pencil
   autocmd!
-	autocmd FileType tex					call pencil#init()
+	autocmd FileType tex					call pencil#init({'wrap': 'soft'})
 	autocmd FileType org          call pencil#init()
   autocmd FileType markdown,mkd call pencil#init()
   autocmd FileType text         call pencil#init()
 augroup END
+
+" }}}
+" LaTeX {{{
+if empty(v:servername) && exists('*remote_startserver')
+	call remote_startserver('VIM')
+endif
+
+let g:vimtex_fold_enabled = 1
+let g:vimtex_quickfix_autoclose_after_keystrokes = 1
 
 " }}}
 " Journal {{{
