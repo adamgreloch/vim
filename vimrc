@@ -83,6 +83,11 @@ Plugin 'junegunn/goyo.vim'
 Plugin 'lambdalisue/vim-fullscreen'
 Plugin 'lervag/vimtex'
 
+" Linux-specific plugins
+" Some plugins just won't work on Windows properly...
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -186,7 +191,13 @@ autocmd BufWritePre * call AddLastLine()
 " Code related settings {{{
 " On pressing tab, insert 2 spaces
 set tabstop=2
-set shiftwidth=2 
+set shiftwidth=2
+
+" UltiSnips configuration
+
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " }}}
 " Writing text {{{
 " Initialize Pencil based on file types
