@@ -34,7 +34,7 @@ language time pl_PL.utf8
 if has('win32') || has('win64')
 	language time pl_PL
 	set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
-	nnoremap <silent> <leader><F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
+	nnoremap <silent> <F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
 endif
 
 " }}}
