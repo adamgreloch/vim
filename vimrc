@@ -4,6 +4,8 @@ filetype plugin on
 autocmd!
 
 syntax on
+set backspace=indent,eol,start
+
 " Set UTF-8 encoding
 set encoding=utf8
 "set fileencoding=utf8
@@ -32,7 +34,7 @@ language time pl_PL.utf8
 if has('win32') || has('win64')
 	language time pl_PL
 	set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
-	nnoremap <leader><F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
+	nnoremap <silent> <leader><F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
 endif
 
 " }}}
@@ -80,7 +82,6 @@ Plugin 'morhetz/gruvbox'
 Plugin 'junegunn/goyo.vim'
 Plugin 'lambdalisue/vim-fullscreen'
 Plugin 'lervag/vimtex'
-Plugin 'SirVer/ultisnips'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -117,7 +118,7 @@ autocmd GUIEnter * set visualbell t_vb=
 " }}}
 " Set gVim font {{{
 if has('win32') || has('win64')
-	set guifont=Meslo_LG_S:h12:cEASTEUROPE:qDRAFT
+	set guifont=Meslo_LG_S:h14:cEASTEUROPE:qDRAFT
 else
 	set guifont=Monospace\ 12
 endif
