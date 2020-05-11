@@ -10,8 +10,8 @@ set backspace=indent,eol,start
 set encoding=utf8
 "set fileencoding=utf8
 
+set numberwidth=4
 set foldmethod=marker
-
 set textwidth=0
 set clipboard=unnamed
 
@@ -133,20 +133,22 @@ endif
 set diffopt+=vertical
 " }}}
 " Leaders {{{
-nnoremap <leader>n <esc>:NERDTree %:h<cr>
-nnoremap <leader>w <esc>:w<cr>
+nnoremap <leader>n :NERDTree %:h<cr>
+nnoremap <leader>w :w<cr>
 nnoremap <leader>e :w!<cr>:e %:h<cr>
 nnoremap <leader>ov :e ~/.vim/vimrc<cr>
 nnoremap <leader>P "+p<cr>
 nnoremap <leader>g :Goyo<cr>
-nnoremap <leader>q <esc>:q<cr>
-nnoremap <leader>b <esc><C-^>
-nnoremap <leader>B <esc>:ls<cr>:b<Space>
+nnoremap <leader>q :q<cr>
+nnoremap <leader>b <C-^>
+nnoremap <leader>B :ls<cr>:b<Space>
+nnoremap <leader>r :set relativenumber!<cr>
+nnoremap <leader>cl1 :set conceallevel=1<cr>
+nnoremap <leader>cl0 :set conceallevel=0<cr>
 inoremap <leader>q <esc>:q<cr>a
 inoremap <leader>I <esc>I
 inoremap <leader>A <esc>A
 inoremap <leader>w <esc>:w<cr>a
-inoremap <leader>P <esc>"+p<cr>a
 " }}}
 " FZF {{{
 " let $FZF_DEFAULT_COMMAND = 'ag -g ""'
