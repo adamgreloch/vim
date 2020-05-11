@@ -1,5 +1,5 @@
 " Setup {{{
-set nocompatible              " be iMproved, required
+set nocompatible
 filetype plugin on
 autocmd!
 
@@ -137,7 +137,7 @@ nnoremap <leader>n <esc>:NERDTree %:h<cr>
 nnoremap <leader>w <esc>:w<cr>
 nnoremap <leader>e :w!<cr>:e %:h<cr>
 nnoremap <leader>ov :e ~/.vim/vimrc<cr>
-nnoremap <leader>p "+p<cr>
+nnoremap <leader>P "+p<cr>
 nnoremap <leader>g :Goyo<cr>
 nnoremap <leader>q <esc>:q<cr>
 nnoremap <leader>b <esc><C-^>
@@ -146,7 +146,7 @@ inoremap <leader>q <esc>:q<cr>a
 inoremap <leader>I <esc>I
 inoremap <leader>A <esc>A
 inoremap <leader>w <esc>:w<cr>a
-inoremap <leader>p <esc>"+p<cr>a
+inoremap <leader>P <esc>"+p<cr>a
 " }}}
 " FZF {{{
 " let $FZF_DEFAULT_COMMAND = 'ag -g ""'
