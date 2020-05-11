@@ -10,6 +10,7 @@ set backspace=indent,eol,start
 set encoding=utf8
 "set fileencoding=utf8
 
+set scrolloff=6 " Keep 6 lines below and above the cursor
 set numberwidth=4
 set foldmethod=marker
 set textwidth=0
