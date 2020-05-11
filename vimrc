@@ -12,7 +12,7 @@ set encoding=utf8
 
 set foldmethod=marker
 
-set textwidth=80
+set textwidth=0
 set clipboard=unnamed
 
 if empty(glob('~/.vim/tmp'))
@@ -82,6 +82,7 @@ Plugin 'morhetz/gruvbox'
 Plugin 'junegunn/goyo.vim'
 Plugin 'lambdalisue/vim-fullscreen'
 Plugin 'lervag/vimtex'
+Plugin 'hugolgst/vimsence'
 
 " Linux-specific plugins
 " Some plugins just won't work on Windows properly...
@@ -138,6 +139,12 @@ nnoremap <leader>e :w!<cr>:e %:h<cr>
 nnoremap <leader>ov :e ~/.vim/vimrc<cr>
 nnoremap <leader>p "+p<cr>
 nnoremap <leader>g :Goyo<cr>
+nnoremap <leader>q <esc>:q<cr>
+nnoremap <leader>b <esc><C-^>
+nnoremap <leader>B <esc>:ls<cr>:b<Space>
+inoremap <leader>q <esc>:q<cr>a
+inoremap <leader>I <esc>I
+inoremap <leader>A <esc>A
 inoremap <leader>w <esc>:w<cr>a
 inoremap <leader>p <esc>"+p<cr>a
 " }}}
@@ -177,6 +184,20 @@ endfunction
 
 autocmd BufWritePre * call AddLastLine()
 
+" Create parent directory on save because I'm lazy
+" https://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save
+function s:MkNonExDir(file, buf)
+    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+        let dir=fnamemodify(a:file, ':h')
+        if !isdirectory(dir)
+            call mkdir(dir, 'p')
+        endif
+    endif
+endfunction
+augroup BWCCreateDir
+    autocmd!
+    autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+augroup END
 " }}}
 " Bindings {{{
 	" Cursor movement {{{
@@ -243,8 +264,13 @@ if empty(v:servername) && exists('*remote_startserver')
 endif
 
 let g:vimtex_fold_enabled = 1
-let g:vimtex_quickfix_autoclose_after_keystrokes = 1
+"let g:vimtex_quickfix_autoclose_after_keystrokes = 1
+let g:tex_conceal='abdmg'
+"let g:tex_conceal = 'b'
+let g:vimtex_quickfix_open_on_warning = 0
+au! BufRead,BufNewFile *.tex setlocal conceallevel=1
 
+set conceallevel=1
 " }}}
 " Journal {{{
 function! JournalOpen() 
