@@ -272,8 +272,6 @@ let g:tex_conceal='abdmg'
 "let g:tex_conceal = 'b'
 let g:vimtex_quickfix_open_on_warning = 0
 au! BufRead,BufNewFile *.tex setlocal conceallevel=1
-
-set conceallevel=1
 " }}}
 " Journal {{{
 function! JournalOpen() 
