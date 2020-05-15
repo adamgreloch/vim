@@ -13,7 +13,6 @@ set encoding=utf8
 set scrolloff=6 " Keep 6 lines below and above the cursor
 set numberwidth=4
 set foldmethod=marker
-set textwidth=0
 set clipboard=unnamed
 
 if empty(glob('~/.vim/tmp'))
@@ -34,8 +33,9 @@ language time pl_PL.utf8
 " Windows-specific settings {{{
 if has('win32') || has('win64')
 	language time pl_PL
+	let &pythonthreedll = 'C:\python37\python37.dll'
 	set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
-	nnoremap <silent> <F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
+	nnoremap <silent> <F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen_64.dll", "ToggleFullScreen", 0)<CR>
 endif
 
 " }}}
@@ -84,6 +84,8 @@ Plugin 'junegunn/goyo.vim'
 Plugin 'lambdalisue/vim-fullscreen'
 Plugin 'lervag/vimtex'
 Plugin 'hugolgst/vimsence'
+Plugin 'godlygeek/tabular'
+Plugin 'plasticboy/vim-markdown'
 
 " Linux-specific plugins
 " Some plugins just won't work on Windows properly...
@@ -173,6 +175,7 @@ let g:fzf_colors =
   \ 'header':  ['fg', 'Comment'] }
 " }}}
 " Misc {{{
+" Toggle folding
 nnoremap z<Space> za
 
 " Some format options
@@ -186,21 +189,33 @@ function! AddLastLine()
 endfunction
 
 autocmd BufWritePre * call AddLastLine()
+	" Goyo settings {{{
+	function! s:goyo_enter()
+		set guicursor+=a:blinkon0
+	endfunction
 
-" Create parent directory on save because I'm lazy
-" https://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save
-function s:MkNonExDir(file, buf)
-    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
-        let dir=fnamemodify(a:file, ':h')
-        if !isdirectory(dir)
-            call mkdir(dir, 'p')
-        endif
-    endif
-endfunction
-augroup BWCCreateDir
-    autocmd!
-    autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
-augroup END
+	function! s:goyo_leave()
+		set guicursor-=a:blinkon0
+	endfunction
+
+	autocmd! User GoyoEnter call <SID>goyo_enter()
+	autocmd! User GoyoLeave call <SID>goyo_leave()
+	"}}}
+	" Create parent directory on save because I'm lazy {{{
+	" https://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save
+	function s:MkNonExDir(file, buf)
+			if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+					let dir=fnamemodify(a:file, ':h')
+					if !isdirectory(dir)
+							call mkdir(dir, 'p')
+					endif
+			endif
+	endfunction
+	augroup BWCCreateDir
+			autocmd!
+			autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+	augroup END
+	" }}}
 " }}}
 " Bindings {{{
 	" Cursor movement {{{
@@ -256,10 +271,13 @@ augroup pencil
   autocmd!
 	autocmd FileType tex					call pencil#init({'wrap': 'soft'})
 	autocmd FileType org					call pencil#init()
-  autocmd FileType markdown,mkd call pencil#init()
+	autocmd FileType markdown,mkd call pencil#init({'wrap': 'soft'})
+														\ | set spelllang=en,pl
   autocmd FileType text         call pencil#init()
 augroup END
 
+" Markdown specific
+let g:vim_markdown_folding_disabled = 1
 " }}}
 " LaTeX {{{
 if empty(v:servername) && exists('*remote_startserver')
