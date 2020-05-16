@@ -242,13 +242,14 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " }}}
+" Writing text {{{
 " pandoc {{{
 let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
 let g:pandoc#command#latex_engine = "pdflatex"
-nnoremap <silent> <leader>pcp :Pandoc pdf --template="~/Dropbox/papiery/defaults.latex"<cr>
-nnoremap <expr> <silent> <leader>pop ":!start ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
+nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Dropbox/papiery/defaults.latex"<cr>
+nnoremap <expr> <silent> <leader>oo ":!start ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
 " }}}
-" Writing text {{{
+" Pencil {{{
 " Initialize Pencil based on file types
 
 au! BufRead,BufNewFile *.org            setfiletype org
@@ -285,8 +286,8 @@ augroup pencil
 														\ | set spelllang=en,pl
   autocmd FileType text         call pencil#init()
 augroup END
-
-" Markdown specific
+" }}}
+" Markdown {{{
 let g:vim_markdown_folding_disabled = 1
 " }}}
 " LaTeX {{{
@@ -312,5 +313,6 @@ autocmd BufNewFile ~/Dropbox/vimjrnl/* :$pu!=strftime('# %A, %d.%m.%y')
 autocmd BufNewFile ~/Dropbox/vimjrnl/* :$pu=strftime('## %H:%M ') | :normal GA
 autocmd BufRead ~/Dropbox/vimjrnl/* $pu=strftime('## %H:%M ') | :normal GA
 " autocmd BufReadPost ~/Dropbox/test/* :normal GA
+" }}}
 " }}}
 
