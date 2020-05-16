@@ -10,10 +10,12 @@ set backspace=indent,eol,start
 set encoding=utf8
 "set fileencoding=utf8
 
+set termguicolors
 set scrolloff=6 " Keep 6 lines below and above the cursor
 set numberwidth=4
 set foldmethod=marker
 set clipboard=unnamed
+set spellcapcheck=
 
 if empty(glob('~/.vim/tmp'))
 	silent !mkdir -p ~/.vim/tmp
@@ -33,6 +35,7 @@ language time pl_PL.utf8
 " Windows-specific settings {{{
 if has('win32') || has('win64')
 	language time pl_PL
+	let $PDFVIEWER = "SumatraPDF"
 	let &pythonthreedll = 'C:\python37\python37.dll'
 	set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
 	nnoremap <silent> <F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen_64.dll", "ToggleFullScreen", 0)<CR>
@@ -75,17 +78,14 @@ Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'preservim/nerdtree'
 Plugin 'derekmcloughlin/gvimfullscreen_win32'
-Plugin 'vimwiki/vimwiki'
-Plugin 'jceb/vim-orgmode'
 Plugin 'reedes/vim-pencil'
 Plugin 'tpope/vim-fugitive'
 Plugin 'morhetz/gruvbox'
 Plugin 'junegunn/goyo.vim'
-Plugin 'lambdalisue/vim-fullscreen'
 Plugin 'lervag/vimtex'
 Plugin 'hugolgst/vimsence'
-Plugin 'godlygeek/tabular'
-Plugin 'plasticboy/vim-markdown'
+Plugin 'vim-pandoc/vim-pandoc'
+Plugin 'junegunn/limelight.vim'
 
 " Linux-specific plugins
 " Some plugins just won't work on Windows properly...
@@ -152,12 +152,16 @@ inoremap <leader>q <esc>:q<cr>a
 inoremap <leader>I <esc>I
 inoremap <leader>A <esc>A
 inoremap <leader>w <esc>:w<cr>a
+
+" limelight
+nnoremap <leader>L :Limelight!! 0.8<cr>
 " }}}
 " FZF {{{
 " let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 nnoremap <silent> <leader>o :Files<CR>
 nnoremap <silent> <leader>oh :Files ~<CR>
 nnoremap <silent> <leader>og :Files ~/git/<CR>
+nnoremap <silent> <leader>op :Files ~/Dropbox/papiery/<CR>
 let g:fzf_layout = { 'down': '~40%' }
 let g:fzf_colors =
 \ { 'fg':      ['fg', 'Normal'],
@@ -237,6 +241,12 @@ set shiftwidth=2
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+" }}}
+" pandoc {{{
+let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
+let g:pandoc#command#latex_engine = "pdflatex"
+nnoremap <silent> <leader>pcp :Pandoc pdf --template="~/Dropbox/papiery/defaults.latex"<cr>
+nnoremap <expr> <silent> <leader>pop ":!start ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
 " }}}
 " Writing text {{{
 " Initialize Pencil based on file types
