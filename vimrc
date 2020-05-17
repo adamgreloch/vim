@@ -86,6 +86,7 @@ Plugin 'lervag/vimtex'
 Plugin 'hugolgst/vimsence'
 Plugin 'vim-pandoc/vim-pandoc'
 Plugin 'junegunn/limelight.vim'
+Plugin 'easymotion/vim-easymotion'
 
 " Linux-specific plugins
 " Some plugins just won't work on Windows properly...
@@ -152,6 +153,9 @@ inoremap <leader>q <esc>:q<cr>a
 inoremap <leader>I <esc>I
 inoremap <leader>A <esc>A
 inoremap <leader>w <esc>:w<cr>a
+
+map  <leader>s <Plug>(easymotion-bd-w)
+" nmap <Leader>s <Plug>(easymotion-overwin-w)
 
 " limelight
 nnoremap <leader>L :Limelight!! 0.8<cr>
