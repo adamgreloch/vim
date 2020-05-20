@@ -129,6 +129,8 @@ autocmd GUIEnter * set visualbell t_vb=
 " Set gVim font {{{
 if has('win32') || has('win64')
 	set guifont=Meslo_LG_S:h14:cEASTEUROPE:qDRAFT
+	nnoremap <leader>gf14 :set guifont=Meslo_LG_S:h14:cEASTEUROPE:qDRAFT<cr>
+	nnoremap <leader>gf18 :set guifont=Meslo_LG_S:h18:cEASTEUROPE:qDRAFT<cr>
 else
 	set guifont=Monospace\ 12
 endif
@@ -156,6 +158,8 @@ inoremap <leader>w <esc>:w<cr>a
 
 map  <leader>s <Plug>(easymotion-bd-w)
 " nmap <Leader>s <Plug>(easymotion-overwin-w)
+
+nnoremap <leader>ep :e ~/Dropbox/papiery/
 
 " limelight
 nnoremap <leader>L :Limelight!! 0.8<cr>
