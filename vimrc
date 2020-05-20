@@ -122,6 +122,11 @@ set guioptions-=L
 set guioptions-=m
 "set lines=50 columns=100
 
+" Statusline tweaks
+set laststatus=2
+set statusline=%<\%t\ \ %{PencilMode()}\ %=\ col\ %c%V\ \ line\ %l\,%L\ %P
+let g:pencil#mode_indicators = {'hard': 'H', 'auto': 'A', 'soft': 'S', 'off': '',}
+
 " Disable bells
 set noerrorbells visualbell t_vb=
 autocmd GUIEnter * set visualbell t_vb=
@@ -129,8 +134,8 @@ autocmd GUIEnter * set visualbell t_vb=
 " Set gVim font {{{
 if has('win32') || has('win64')
 	set guifont=Meslo_LG_S:h14:cEASTEUROPE:qDRAFT
-	nnoremap <leader>gf14 :set guifont=Meslo_LG_S:h14:cEASTEUROPE:qDRAFT<cr>
-	nnoremap <leader>gf18 :set guifont=Meslo_LG_S:h18:cEASTEUROPE:qDRAFT<cr>
+	nnoremap <leader>f14 :set guifont=Meslo_LG_S:h14:cEASTEUROPE:qDRAFT<cr>
+	nnoremap <leader>f18 :set guifont=Meslo_LG_S:h18:cEASTEUROPE:qDRAFT<cr>
 else
 	set guifont=Monospace\ 12
 endif
@@ -231,8 +236,8 @@ autocmd BufWritePre * call AddLastLine()
 " }}}
 " Bindings {{{
 	" Cursor movement {{{
-	nnoremap k gk
-	nnoremap j gj
+"	nnoremap k gk
+" nnoremap j gj
 	inoremap <C-k> <C-o>gk
 	inoremap <C-h> <Left>
 	inoremap <C-l> <Right>
@@ -258,42 +263,32 @@ nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Dropbox/papiery/defaults.
 nnoremap <expr> <silent> <leader>oo ":!start ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
 " }}}
 " Pencil {{{
-" Initialize Pencil based on file types
 
 au! BufRead,BufNewFile *.org            setfiletype org
 
-let g:pencil#autoformat_blacklist = [
-        \ 'markdownCode',
-        \ 'markdownUrl',
-        \ 'markdownIdDeclaration',
-        \ 'markdownLinkDelimiter',
-        \ 'markdownHighlight[A-Za-z0-9]+',
-        \ 'mkdCode',
-        \ 'mkdIndentCode',
-        \ 'markdownFencedCodeBlock',
-        \ 'markdownInlineCode',
-        \ 'mmdTable[A-Za-z0-9]*',
-        \ 'txtCode',
-        \ 'texAbstract',
-        \ 'texBeginEndName',
-        \ 'texDelimiter',
-        \ 'texDocType',
-        \ 'texInputFile',
-        \ 'texMath',
-        \ 'texRefZone',
-        \ 'texSection$',
-        \ 'texStatement',
-        \ 'texTitle',
-        \ ]
+" Suspend autoformat during the next Insert
+let g:pencil#map#suspend_af = 'k'
 
-augroup pencil
-  autocmd!
-	autocmd FileType tex					call pencil#init({'wrap': 'soft'})
-	autocmd FileType org					call pencil#init()
-	autocmd FileType markdown,mkd call pencil#init({'wrap': 'soft'})
-														\ | set spelllang=en,pl
-  autocmd FileType text         call pencil#init()
-augroup END
+let g:pencil#conceallevel = 0
+
+function! Prose()
+	call pencil#init({'wrap': 'hard', 'textwidth': '78'})
+	nnoremap <buffer> k gk
+	nnoremap <buffer> j gj
+	set spelllang=en,pl
+endfunction
+ 
+autocmd FileType markdown,mkd,text call Prose()
+autocmd FileType tex 							 call pencil#init({'wrap': 'soft'})
+
+" augroup pencil
+"  autocmd!
+"  autocmd FileType tex					call pencil#init({'wrap': 'soft'})
+"  autocmd FileType org					call pencil#init()
+"  autocmd FileType markdown,mkd call pencil#init({'wrap': 'hard', 'textwidth' : '78'})
+"  													\ | set spelllang=en,pl
+"  autocmd FileType text         call pencil#init()
+" augroup END
 " }}}
 " Markdown {{{
 let g:vim_markdown_folding_disabled = 1
@@ -308,7 +303,6 @@ let g:vimtex_fold_enabled = 1
 let g:tex_conceal='abdmg'
 "let g:tex_conceal = 'b'
 let g:vimtex_quickfix_open_on_warning = 0
-au! BufRead,BufNewFile *.tex setlocal conceallevel=1
 " }}}
 " Journal {{{
 function! JournalOpen() 
