@@ -8,14 +8,19 @@ set backspace=indent,eol,start
 
 " Set UTF-8 encoding
 set encoding=utf8
-"set fileencoding=utf8
 
+set wildmenu " Tab completion
 set termguicolors
 set scrolloff=6 " Keep 6 lines below and above the cursor
+set smartindent
 set numberwidth=4
 set foldmethod=marker
 set clipboard=unnamed
 set spellcapcheck=
+
+" Search
+set ic
+set hls is
 
 if empty(glob('~/.vim/tmp'))
 	silent !mkdir -p ~/.vim/tmp
@@ -25,12 +30,14 @@ set backupdir=~/.vim/tmp//
 set directory=~/.vim/tmp//
 set undodir=~/.vim/tmp//
 
-	" }}}
+" }}}
 " Language {{{
 language en_US.utf8
+
 " }}}
 " Linux-specific settings {{{
 language time pl_PL.utf8
+
 " }}}
 " Windows-specific settings {{{
 if has('win32') || has('win64')
@@ -38,15 +45,15 @@ if has('win32') || has('win64')
 	let $PDFVIEWER = "SumatraPDF"
 	let &pythonthreedll = 'C:\python37\python37.dll'
 	set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
-	nnoremap <silent> <F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen_64.dll", "ToggleFullScreen", 0)<CR>
+	nnoremap <silent> <F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
 endif
 
 " }}}
-" Vundle config {{{ 
+" Vundle config {{{
 
 "Vundle bootstrap
 if !filereadable($HOME . '/.vim/bundle/Vundle.vim/.git/config') && confirm("Clone Vundle?","Y\nn") == 1
-    exec '!git clone https://github.com/gmarik/Vundle.vim ~/.vim/bundle/Vundle.vim/'
+	exec '!git clone https://github.com/gmarik/Vundle.vim ~/.vim/bundle/Vundle.vim/'
 endif
 
 " set the runtime path to include Vundle and initialize
@@ -74,6 +81,7 @@ Plugin 'VundleVim/Vundle.vim'
 " different version somewhere else.
 " Plugin 'ascenator/L9', {'name': 'newL9'}
 
+Plugin 'vim-airline/vim-airline'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'preservim/nerdtree'
@@ -88,48 +96,29 @@ Plugin 'vim-pandoc/vim-pandoc'
 Plugin 'junegunn/limelight.vim'
 Plugin 'easymotion/vim-easymotion'
 
-" Linux-specific plugins
-" Some plugins just won't work on Windows properly...
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 
 " All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-" filetype plugin on
-
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just
-" :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to
-" auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
+call vundle#end()
+filetype plugin indent on
 
 " }}}
 " Theme {{{
-autocmd vimenter * colorscheme gruvbox
+colorscheme gruvbox
 set background=dark
+
 " }}}
 " GUI tweaks {{{
-set guioptions-=T
-set guioptions-=r  
-set guioptions-=L 
-set guioptions-=m
-"set lines=50 columns=100
+set guioptions=cgt
 
 " Statusline tweaks
 set laststatus=2
-set statusline=%<\%t\ \ %{PencilMode()}\ %=\ col\ %c%V\ \ line\ %l\,%L\ %P
-let g:pencil#mode_indicators = {'hard': 'H', 'auto': 'A', 'soft': 'S', 'off': '',}
 
 " Disable bells
 set noerrorbells visualbell t_vb=
 autocmd GUIEnter * set visualbell t_vb=
+
 " }}}
 " Set gVim font {{{
 if has('win32') || has('win64')
@@ -139,9 +128,11 @@ if has('win32') || has('win64')
 else
 	set guifont=Monospace\ 12
 endif
+
 " }}}
 " Version Control {{{
 set diffopt+=vertical
+
 " }}}
 " Leaders {{{
 nnoremap <leader>n :NERDTree %:h<cr>
@@ -153,7 +144,7 @@ nnoremap <leader>g :Goyo<cr>
 nnoremap <leader>q :q<cr>
 nnoremap <leader>b <C-^>
 nnoremap <leader>B :ls<cr>:b<Space>
-nnoremap <leader>r :set relativenumber!<cr>
+nnoremap <leader>r :set relativenumber!<cr>:set number!<cr>:set cursorline!<cr>
 nnoremap <leader>cl1 :set conceallevel=1<cr>
 nnoremap <leader>cl0 :set conceallevel=0<cr>
 inoremap <leader>q <esc>:q<cr>a
@@ -168,6 +159,7 @@ nnoremap <leader>ep :e ~/Dropbox/papiery/
 
 " limelight
 nnoremap <leader>L :Limelight!! 0.8<cr>
+
 " }}}
 " FZF {{{
 " let $FZF_DEFAULT_COMMAND = 'ag -g ""'
@@ -177,72 +169,75 @@ nnoremap <silent> <leader>og :Files ~/git/<CR>
 nnoremap <silent> <leader>op :Files ~/Dropbox/papiery/<CR>
 let g:fzf_layout = { 'down': '~40%' }
 let g:fzf_colors =
-\ { 'fg':      ['fg', 'Normal'],
-  \ 'bg':      ['bg', 'Normal'],
-  \ 'hl':      ['fg', 'Comment'],
-  \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-  \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
-  \ 'hl+':     ['fg', 'Statement'],
-  \ 'info':    ['fg', 'PreProc'],
-  \ 'border':  ['fg', 'Ignore'],
-  \ 'prompt':  ['fg', 'Conditional'],
-  \ 'pointer': ['fg', 'Exception'],
-  \ 'marker':  ['fg', 'Keyword'],
-  \ 'spinner': ['fg', 'Label'],
-  \ 'header':  ['fg', 'Comment'] }
+			\ { 'fg':      ['fg', 'Normal'],
+			\ 'bg':      ['bg', 'Normal'],
+			\ 'hl':      ['fg', 'Comment'],
+			\ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+			\ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+			\ 'hl+':     ['fg', 'Statement'],
+			\ 'info':    ['fg', 'PreProc'],
+			\ 'border':  ['fg', 'Ignore'],
+			\ 'prompt':  ['fg', 'Conditional'],
+			\ 'pointer': ['fg', 'Exception'],
+			\ 'marker':  ['fg', 'Keyword'],
+			\ 'spinner': ['fg', 'Label'],
+			\ 'header':  ['fg', 'Comment'] }
+
 " }}}
 " Misc {{{
 " Toggle folding
 nnoremap z<Space> za
 
 " Some format options
-au FileType vim set fo-=c fo-=r fo-=o 
+au FileType vim set fo-=c fo-=r fo-=o
 
 " Add/check for last line break
 function! AddLastLine()
-    if getline('$') !~ "^$"
-        call append(line('$'), '')
-    endif
+	if getline('$') !~ "^$"
+		call append(line('$'), '')
+	endif
 endfunction
 
 autocmd BufWritePre * call AddLastLine()
-	" Goyo settings {{{
-	function! s:goyo_enter()
-		set guicursor+=a:blinkon0
-	endfunction
 
-	function! s:goyo_leave()
-		set guicursor-=a:blinkon0
-	endfunction
+" Goyo settings {{{
+function! s:goyo_enter()
+	set guicursor+=a:blinkon0
+endfunction
 
-	autocmd! User GoyoEnter call <SID>goyo_enter()
-	autocmd! User GoyoLeave call <SID>goyo_leave()
-	"}}}
-	" Create parent directory on save because I'm lazy {{{
-	" https://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save
-	function s:MkNonExDir(file, buf)
-			if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
-					let dir=fnamemodify(a:file, ':h')
-					if !isdirectory(dir)
-							call mkdir(dir, 'p')
-					endif
-			endif
-	endfunction
-	augroup BWCCreateDir
-			autocmd!
-			autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
-	augroup END
-	" }}}
+function! s:goyo_leave()
+	set guicursor-=a:blinkon0
+endfunction
+
+autocmd! User GoyoEnter call <SID>goyo_enter()
+autocmd! User GoyoLeave call <SID>goyo_leave()
+
+"}}}
+" Create parent directory on save because I'm lazy {{{
+" https://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save
+function s:MkNonExDir(file, buf)
+	if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+		let dir=fnamemodify(a:file, ':h')
+		if !isdirectory(dir)
+			call mkdir(dir, 'p')
+		endif
+	endif
+endfunction
+augroup BWCCreateDir
+	autocmd!
+	autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+augroup END
+
+" }}}
 " }}}
 " Bindings {{{
-	" Cursor movement {{{
-"	nnoremap k gk
-" nnoremap j gj
-	inoremap <C-k> <C-o>gk
-	inoremap <C-h> <Left>
-	inoremap <C-l> <Right>
-	inoremap <C-j> <C-o>gj
-	" }}}
+" Cursor movement {{{
+inoremap <C-k> <C-o>gk
+inoremap <C-h> <Left>
+inoremap <C-l> <Right>
+inoremap <C-j> <C-o>gj
+
+" }}}
 " }}}
 " Code related settings {{{
 " On pressing tab, insert 2 spaces
@@ -250,10 +245,10 @@ set tabstop=2
 set shiftwidth=2
 
 " UltiSnips configuration
-
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
 " }}}
 " Writing text {{{
 " pandoc {{{
@@ -261,14 +256,14 @@ let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "to
 let g:pandoc#command#latex_engine = "pdflatex"
 nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Dropbox/papiery/defaults.latex"<cr>
 nnoremap <expr> <silent> <leader>oo ":!start ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
+
 " }}}
 " Pencil {{{
 
 au! BufRead,BufNewFile *.org            setfiletype org
 
 " Suspend autoformat during the next Insert
-let g:pencil#map#suspend_af = 'k'
-
+let g:pencil#map#suspend_af = 'K'
 let g:pencil#conceallevel = 0
 
 function! Prose()
@@ -277,21 +272,14 @@ function! Prose()
 	nnoremap <buffer> j gj
 	set spelllang=en,pl
 endfunction
- 
+
 autocmd FileType markdown,mkd,text call Prose()
 autocmd FileType tex 							 call pencil#init({'wrap': 'soft'})
 
-" augroup pencil
-"  autocmd!
-"  autocmd FileType tex					call pencil#init({'wrap': 'soft'})
-"  autocmd FileType org					call pencil#init()
-"  autocmd FileType markdown,mkd call pencil#init({'wrap': 'hard', 'textwidth' : '78'})
-"  													\ | set spelllang=en,pl
-"  autocmd FileType text         call pencil#init()
-" augroup END
 " }}}
 " Markdown {{{
 let g:vim_markdown_folding_disabled = 1
+
 " }}}
 " LaTeX {{{
 if empty(v:servername) && exists('*remote_startserver')
@@ -299,22 +287,21 @@ if empty(v:servername) && exists('*remote_startserver')
 endif
 
 let g:vimtex_fold_enabled = 1
-"let g:vimtex_quickfix_autoclose_after_keystrokes = 1
 let g:tex_conceal='abdmg'
-"let g:tex_conceal = 'b'
 let g:vimtex_quickfix_open_on_warning = 0
+
 " }}}
 " Journal {{{
-function! JournalOpen() 
-    return ':e ~/Dropbox/vimjrnl/'.strftime('%Y%m%d').'.md'
+function! JournalOpen()
+	return ':e ~/Dropbox/vimjrnl/'.strftime('%Y%m%d').'.md'
 endfunction
 
-nnoremap <expr> <leader>oj JournalOpen() 
+nnoremap <expr> <leader>oj JournalOpen()
 
 autocmd BufNewFile ~/Dropbox/vimjrnl/* :$pu!=strftime('# %A, %d.%m.%y')
 autocmd BufNewFile ~/Dropbox/vimjrnl/* :$pu=strftime('## %H:%M ') | :normal GA
 autocmd BufRead ~/Dropbox/vimjrnl/* $pu=strftime('## %H:%M ') | :normal GA
-" autocmd BufReadPost ~/Dropbox/test/* :normal GA
+
 " }}}
 " }}}
 
