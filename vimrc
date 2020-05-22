@@ -11,7 +11,6 @@ set encoding=utf8
 
 set wildmenu " Tab completion
 set termguicolors
-set scrolloff=6 " Keep 6 lines below and above the cursor
 set smartindent
 set numberwidth=4
 set foldmethod=marker
@@ -20,7 +19,8 @@ set spellcapcheck=
 
 " Search
 set ic
-set hls is
+set hls
+nnoremap <silent> <cr> :noh<CR><CR>
 
 if empty(glob('~/.vim/tmp'))
 	silent !mkdir -p ~/.vim/tmp
@@ -45,7 +45,7 @@ if has('win32') || has('win64')
 	let $PDFVIEWER = "SumatraPDF"
 	let &pythonthreedll = 'C:\python37\python37.dll'
 	set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
-	nnoremap <silent> <F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen.dll", "ToggleFullScreen", 0)<CR>
+	nnoremap <silent> <F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen_64.dll", "ToggleFullScreen", 0)<CR>
 endif
 
 " }}}
@@ -119,6 +119,13 @@ set laststatus=2
 set noerrorbells visualbell t_vb=
 autocmd GUIEnter * set visualbell t_vb=
 
+" Set scrolloff margin to 33% of winheight
+augroup VCenterCursor
+	au!
+	au BufEnter,WinEnter,WinNew,VimResized *,*.*
+				\ let &scrolloff=winheight(win_getid())/3
+augroup END
+
 " }}}
 " Set gVim font {{{
 if has('win32') || has('win64')
@@ -143,7 +150,7 @@ nnoremap <leader>P "+p<cr>
 nnoremap <leader>g :Goyo<cr>
 nnoremap <leader>q :q<cr>
 nnoremap <leader>b <C-^>
-nnoremap <leader>B :ls<cr>:b<Space>
+nnoremap <leader>B :Buffers<cr>
 nnoremap <leader>r :set relativenumber!<cr>:set number!<cr>:set cursorline!<cr>
 nnoremap <leader>cl1 :set conceallevel=1<cr>
 nnoremap <leader>cl0 :set conceallevel=0<cr>
@@ -167,7 +174,7 @@ nnoremap <silent> <leader>o :Files<CR>
 nnoremap <silent> <leader>oh :Files ~<CR>
 nnoremap <silent> <leader>og :Files ~/git/<CR>
 nnoremap <silent> <leader>op :Files ~/Dropbox/papiery/<CR>
-let g:fzf_layout = { 'down': '~40%' }
+let g:fzf_layout = { 'down': '~30%' }
 let g:fzf_colors =
 			\ { 'fg':      ['fg', 'Normal'],
 			\ 'bg':      ['bg', 'Normal'],
@@ -182,7 +189,9 @@ let g:fzf_colors =
 			\ 'marker':  ['fg', 'Keyword'],
 			\ 'spinner': ['fg', 'Label'],
 			\ 'header':  ['fg', 'Comment'] }
-
+if has('win32') || has('win64')
+	let g:fzf_preview_window = ''
+endif
 " }}}
 " Misc {{{
 " Toggle folding
@@ -207,6 +216,7 @@ endfunction
 
 function! s:goyo_leave()
 	set guicursor-=a:blinkon0
+	AirlineRefresh " Fixes airline-theme not being applied after leaving Goyo
 endfunction
 
 autocmd! User GoyoEnter call <SID>goyo_enter()
@@ -232,6 +242,8 @@ augroup END
 " }}}
 " Bindings {{{
 " Cursor movement {{{
+nnoremap j gj
+nnoremap k gk
 inoremap <C-k> <C-o>gk
 inoremap <C-h> <Left>
 inoremap <C-l> <Right>
@@ -251,6 +263,10 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 " }}}
 " Writing text {{{
+let g:limelight_bop = '^.*$'
+let g:limelight_eop = '\n'
+let g:limelight_paragraph_span = 3
+
 " pandoc {{{
 let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
 let g:pandoc#command#latex_engine = "pdflatex"
