@@ -154,7 +154,8 @@ nnoremap <leader>g :Goyo<cr>
 nnoremap <leader>q :q<cr>
 nnoremap <leader>b <C-^>
 nnoremap <leader>B :Buffers<cr>
-nnoremap <leader>r :set relativenumber!<cr>:set number!<cr>:set cursorline!<cr>
+nnoremap <silent><leader>r :set relativenumber!<cr>:set cursorline!<cr>
+nnoremap <silent><leader>R :set number!<cr>
 nnoremap <leader>cl1 :set conceallevel=1<cr>
 nnoremap <leader>cl0 :set conceallevel=0<cr>
 inoremap <leader>q <esc>:q<cr>a
@@ -244,7 +245,7 @@ augroup END
 " }}}
 " }}}
 " Bindings {{{
-" Cursor movement {{{
+" Cursor movement
 nnoremap j gj
 nnoremap k gk
 inoremap <C-k> <C-o>gk
@@ -252,9 +253,34 @@ inoremap <C-h> <Left>
 inoremap <C-l> <Right>
 inoremap <C-j> <C-o>gj
 
-" }}}
+" Split movement
+nnoremap <C-J> <C-W><C-J>
+nnoremap <C-K> <C-W><C-K>
+nnoremap <C-L> <C-W><C-L>
+nnoremap <C-H> <C-W><C-H>
+
 " }}}
 " Code related settings {{{
+" Python {{{
+
+" PEP 8
+function! PepStandards()
+	set tabstop=4
+	set softtabstop=4
+	set shiftwidth=4
+	set textwidth=79
+	set expandtab
+	set autoindent
+	set fileformat=unix
+endfunction
+
+au BufNewFile,BufRead *.py :call PepStandards()
+
+" Run code
+autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
+autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
+
+" }}}
 " On pressing tab, insert 2 spaces
 set tabstop=2
 set shiftwidth=2
