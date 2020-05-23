@@ -304,9 +304,6 @@ nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")." ".expand("%:p:r")."
 
 " }}}
 " Pencil {{{
-
-au! BufRead,BufNewFile *.org            setfiletype org
-
 " Suspend autoformat during the next Insert
 let g:pencil#map#suspend_af = 'K'
 let g:pencil#conceallevel = 0
