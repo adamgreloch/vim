@@ -36,8 +36,10 @@ language en_US.utf8
 
 " }}}
 " Linux-specific settings {{{
-language time pl_PL.utf8
-
+if has('gnu/linux')
+	language time pl_PL.utf8
+	let $PDFVIEWER = "okular"
+endif
 " }}}
 " Windows-specific settings {{{
 if has('win32') || has('win64')
@@ -95,6 +97,7 @@ Plugin 'hugolgst/vimsence'
 Plugin 'vim-pandoc/vim-pandoc'
 Plugin 'junegunn/limelight.vim'
 Plugin 'easymotion/vim-easymotion'
+Plugin 'tpope/vim-dispatch'
 
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
@@ -271,7 +274,7 @@ let g:limelight_paragraph_span = 3
 let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
 let g:pandoc#command#latex_engine = "pdflatex"
 nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Dropbox/papiery/defaults.latex"<cr>
-nnoremap <expr> <silent> <leader>oo ":!start ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
+nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
 
 " }}}
 " Pencil {{{
