@@ -178,6 +178,8 @@ nnoremap <silent> <leader>o :Files<CR>
 nnoremap <silent> <leader>oh :Files ~<CR>
 nnoremap <silent> <leader>og :Files ~/git/<CR>
 nnoremap <silent> <leader>op :Files ~/Dropbox/papiery/<CR>
+nnoremap <silent> <leader>od :Files ~/Dropbox/<CR>
+
 let g:fzf_layout = { 'down': '~30%' }
 let g:fzf_colors =
 			\ { 'fg':      ['fg', 'Normal'],
