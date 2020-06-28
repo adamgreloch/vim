@@ -14,7 +14,7 @@ set termguicolors
 set smartindent
 set numberwidth=4
 set foldmethod=marker
-set clipboard=unnamed
+set clipboard=unnamedplus
 set spellcapcheck=
 
 " Search
@@ -158,6 +158,7 @@ nnoremap <silent><leader>r :set relativenumber!<cr>:set cursorline!<cr>
 nnoremap <silent><leader>R :set number!<cr>
 nnoremap <leader>cl1 :set conceallevel=1<cr>
 nnoremap <leader>cl0 :set conceallevel=0<cr>
+
 inoremap <leader>q <esc>:q<cr>a
 inoremap <leader>I <esc>I
 inoremap <leader>A <esc>A
@@ -198,6 +199,9 @@ let g:fzf_colors =
 if has('win32') || has('win64')
 	let g:fzf_preview_window = ''
 endif
+" }}}
+" UltiSnips {{{
+let g:UltiSnipsSnippetDirectories=["ultisnips"]
 " }}}
 " Misc {{{
 " Toggle folding
