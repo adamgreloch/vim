@@ -9,7 +9,9 @@ set backspace=indent,eol,start
 " Set UTF-8 encoding
 set encoding=utf8
 
+set mouse=a
 set wildmenu " Tab completion
+set cmdheight=1
 set termguicolors
 set smartindent
 set numberwidth=4
@@ -98,6 +100,7 @@ Plugin 'vim-pandoc/vim-pandoc'
 Plugin 'junegunn/limelight.vim'
 Plugin 'easymotion/vim-easymotion'
 Plugin 'tpope/vim-dispatch'
+Plugin 'freitass/todo.txt-vim'
 
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
@@ -129,6 +132,11 @@ augroup VCenterCursor
 				\ let &scrolloff=winheight(win_getid())/3
 augroup END
 
+" Set NERDtree arrows to -/+
+
+let g:NERDTreeDirArrowExpandable = '+'
+let g:NERDTreeDirArrowCollapsible = '-'
+
 " }}}
 " Set gVim font {{{
 if has('win32') || has('win64')
@@ -149,10 +157,12 @@ nnoremap <leader>n :NERDTree %:h<cr>
 nnoremap <leader>w :w<cr>
 nnoremap <leader>e :w!<cr>:e %:h<cr>
 nnoremap <leader>ov :e ~/.vim/vimrc<cr>
-nnoremap <leader>P "+p<cr>
+nnoremap <leader>p "+p<cr>
+nnoremap <leader>y "+y<cr>
 nnoremap <leader>g :Goyo<cr>
 nnoremap <leader>q :q<cr>
 nnoremap <leader>b <C-^>
+nnoremap <leader>G :Git<cr>
 nnoremap <leader>B :Buffers<cr>
 nnoremap <silent><leader>r :set relativenumber!<cr>:set cursorline!<cr>
 nnoremap <silent><leader>R :set number!<cr>
@@ -207,6 +217,12 @@ let g:UltiSnipsSnippetDirectories=["ultisnips"]
 " Toggle folding
 nnoremap z<Space> za
 
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+let g:airline_symbols.branch = ''
+
 " Some format options
 au FileType vim set fo-=c fo-=r fo-=o
 
@@ -218,6 +234,13 @@ function! AddLastLine()
 endfunction
 
 autocmd BufWritePre * call AddLastLine()
+
+" Todo.txt-vim detect ft
+
+autocmd BufNewFile,BufRead [Tt]odo.txt set filetype=todo
+autocmd BufNewFile,BufRead *.[Tt]odo.txt set filetype=todo
+autocmd BufNewFile,BufRead [Dd]one.txt set filetype=todo
+autocmd BufNewFile,BufRead *.[Dd]one.txt set filetype=todo
 
 " Goyo settings {{{
 function! s:goyo_enter()
@@ -321,7 +344,7 @@ function! Prose()
 	set spelllang=en,pl
 endfunction
 
-autocmd FileType markdown,mkd,text call Prose()
+autocmd FileType markdown,mkd      call Prose()
 autocmd FileType tex 							 call pencil#init({'wrap': 'soft'})
 
 " }}}
