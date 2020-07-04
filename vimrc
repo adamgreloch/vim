@@ -13,8 +13,11 @@ set mouse=a
 set wildmenu " Tab completion
 set cmdheight=1
 set termguicolors
+set guioptions=cgt
 set smartindent
 set numberwidth=4
+set laststatus=2 " Statusline tweaks
+set diffopt+=vertical	" Vertical diff (fugitive)
 set foldmethod=marker
 set clipboard=unnamedplus
 set spellcapcheck=
@@ -40,7 +43,7 @@ language en_US.utf8
 " Linux-specific settings {{{
 if has('gnu/linux')
 	language time pl_PL.utf8
-	let $PDFVIEWER = "okular"
+	let $PDFVIEWER = "zathura"
 endif
 " }}}
 " Windows-specific settings {{{
@@ -110,16 +113,14 @@ call vundle#end()
 filetype plugin indent on
 
 " }}}
-" Theme {{{
+" GUI tweaks {{{
+" Set theme
 colorscheme gruvbox
 set background=dark
 
-" }}}
-" GUI tweaks {{{
-set guioptions=cgt
+" Set spellcheck highlight to bold red in term
 
-" Statusline tweaks
-set laststatus=2
+hi SpellBad cterm=bold ctermfg=167
 
 " Disable bells
 set noerrorbells visualbell t_vb=
@@ -132,10 +133,18 @@ augroup VCenterCursor
 				\ let &scrolloff=winheight(win_getid())/3
 augroup END
 
-" Set NERDtree arrows to -/+
 
+
+" Set NERDtree arrows to -/+
 let g:NERDTreeDirArrowExpandable = '+'
 let g:NERDTreeDirArrowCollapsible = '-'
+
+" Airline symbols
+if !exists('g:airline_symbols')
+	let g:airline_symbols = {}
+endif
+
+let g:airline_symbols.branch = ''
 
 " }}}
 " Set gVim font {{{
@@ -149,7 +158,6 @@ endif
 
 " }}}
 " Version Control {{{
-set diffopt+=vertical
 
 " }}}
 " Leaders {{{
@@ -157,8 +165,8 @@ nnoremap <leader>n :NERDTree %:h<cr>
 nnoremap <leader>w :w<cr>
 nnoremap <leader>e :w!<cr>:e %:h<cr>
 nnoremap <leader>ov :e ~/.vim/vimrc<cr>
-nnoremap <leader>p "+p<cr>
-nnoremap <leader>y "+y<cr>
+nnoremap <leader>P "+p
+nnoremap <leader>Y "+y
 nnoremap <leader>g :Goyo<cr>
 nnoremap <leader>q :q<cr>
 nnoremap <leader>b <C-^>
@@ -184,7 +192,6 @@ nnoremap <leader>L :Limelight!! 0.8<cr>
 
 " }}}
 " FZF {{{
-" let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 nnoremap <silent> <leader>o :Files<CR>
 nnoremap <silent> <leader>oh :Files ~<CR>
 nnoremap <silent> <leader>og :Files ~/git/<CR>
@@ -217,12 +224,6 @@ let g:UltiSnipsSnippetDirectories=["ultisnips"]
 " Toggle folding
 nnoremap z<Space> za
 
-if !exists('g:airline_symbols')
-    let g:airline_symbols = {}
-endif
-
-let g:airline_symbols.branch = ''
-
 " Some format options
 au FileType vim set fo-=c fo-=r fo-=o
 
@@ -236,13 +237,14 @@ endfunction
 autocmd BufWritePre * call AddLastLine()
 
 " Todo.txt-vim detect ft
-
 autocmd BufNewFile,BufRead [Tt]odo.txt set filetype=todo
 autocmd BufNewFile,BufRead *.[Tt]odo.txt set filetype=todo
 autocmd BufNewFile,BufRead [Dd]one.txt set filetype=todo
 autocmd BufNewFile,BufRead *.[Dd]one.txt set filetype=todo
 
-" Goyo settings {{{
+" For the sake of complete distraction-free environment {{{
+
+" Goyo settings
 function! s:goyo_enter()
 	set guicursor+=a:blinkon0
 endfunction
@@ -254,6 +256,11 @@ endfunction
 
 autocmd! User GoyoEnter call <SID>goyo_enter()
 autocmd! User GoyoLeave call <SID>goyo_leave()
+
+" Limelight settings
+let g:limelight_bop = '^.*$'
+let g:limelight_eop = '\n'
+let g:limelight_paragraph_span = 3
 
 "}}}
 " Create parent directory on save because I'm lazy {{{
@@ -273,7 +280,7 @@ augroup END
 
 " }}}
 " }}}
-" Bindings {{{
+" Mappings {{{
 " Cursor movement
 nnoremap j gj
 nnoremap k gk
@@ -282,16 +289,15 @@ inoremap <C-h> <Left>
 inoremap <C-l> <Right>
 inoremap <C-j> <C-o>gj
 
-" Split movement
+" Focus movement
 nnoremap <C-J> <C-W><C-J>
 nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
 " }}}
-" Code related settings {{{
+" Coding {{{
 " Python {{{
-
 " PEP 8
 function! PepStandards()
 	set tabstop=4
@@ -305,11 +311,12 @@ endfunction
 
 au BufNewFile,BufRead *.py :call PepStandards()
 
-" Run code
+" Run current .py
 autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 
 " }}}
+" Misc {{{
 " On pressing tab, insert 2 spaces
 set tabstop=2
 set shiftwidth=2
@@ -320,11 +327,17 @@ let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 " }}}
+" }}}
 " Writing text {{{
-let g:limelight_bop = '^.*$'
-let g:limelight_eop = '\n'
-let g:limelight_paragraph_span = 3
+" Spellcheck {{{
+" If .add file was updated via git, recompile .spl
+for d in glob('~/.vim/spell/*.add', 1, 1)
+    if filereadable(d) && (!filereadable(d . '.spl') || getftime(d) > getftime(d . '.spl'))
+        silent exec 'mkspell! ' . fnameescape(d)
+    endif
+endfor
 
+" }}}
 " pandoc {{{
 let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
 let g:pandoc#command#latex_engine = "pdflatex"
@@ -350,19 +363,21 @@ autocmd FileType tex 							 call pencil#init({'wrap': 'soft'})
 " }}}
 " Markdown {{{
 let g:vim_markdown_folding_disabled = 1
-
 " }}}
-" LaTeX {{{
+" LaTeX (vimtex) {{{
 if empty(v:servername) && exists('*remote_startserver')
 	call remote_startserver('VIM')
 endif
 
 let g:vimtex_fold_enabled = 1
+let g:vimtex_view_method = 'zathura'
 let g:tex_conceal='abdmg'
 let g:vimtex_quickfix_open_on_warning = 0
 
 " }}}
 " Journal {{{
+" Creates a new .md file with a date on top and appends time of every new entry
+" just like org-journal
 function! JournalOpen()
 	return ':e ~/Dropbox/vimjrnl/'.strftime('%Y%m%d').'.md'
 endfunction
