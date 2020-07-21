@@ -4,20 +4,22 @@ filetype plugin on
 autocmd!
 
 syntax on
-set backspace=indent,eol,start
 
 " Set UTF-8 encoding
 set encoding=utf8
 
 set mouse=a
+set backspace=2 " make backspace work like most other programs
 set wildmenu " Tab completion
 set cmdheight=1
 set termguicolors
+set t_Co=256
 set guioptions=cgt
 set smartindent
 set numberwidth=4
 set laststatus=2 " Statusline tweaks
-set diffopt+=vertical	" Vertical diff (fugitive)
+set diffopt+=vertical	" Vertical diff (for fugitive)
+set splitbelow " Split everything below (for term)
 set foldmethod=marker
 set clipboard=unnamedplus
 set spellcapcheck=
@@ -31,6 +33,7 @@ if empty(glob('~/.vim/tmp'))
 	silent !mkdir -p ~/.vim/tmp
 endif
 
+set backup
 set backupdir=~/.vim/tmp//
 set directory=~/.vim/tmp//
 set undodir=~/.vim/tmp//
@@ -41,7 +44,7 @@ language en_US.utf8
 
 " }}}
 " Linux-specific settings {{{
-if has('gnu/linux')
+if has('linux')
 	language time pl_PL.utf8
 	let $PDFVIEWER = "zathura"
 endif
@@ -316,6 +319,14 @@ autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%,
 autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 
 " }}}
+" Java {{{
+autocmd FileType java set makeprg=javac\ %
+set errorformat=%A%f:%l:\ %m,%-Z%p^,%-C%.%#
+nnoremap <F9> :Make<CR>
+nnoremap <silent><F10> :terminal java %:r $SHELL<CR>
+":!java %:r<CR>
+":copen<Return>
+" }}}
 " Misc {{{
 " On pressing tab, insert 2 spaces
 set tabstop=2
@@ -356,6 +367,8 @@ function! Prose()
 	nnoremap <buffer> j gj
 	set spelllang=en,pl
 endfunction
+
+" Maybe a better way would be to use a modeline i.e. # vim:spelllang=en/pl?
 
 autocmd FileType markdown,mkd      call Prose()
 autocmd FileType tex 							 call pencil#init({'wrap': 'soft'})

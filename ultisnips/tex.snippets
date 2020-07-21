@@ -45,10 +45,32 @@ snippet template "Basic template" b
 \end{document}
 endsnippet
 
+snippet todo "TODO comment" b
+%TODO: $1
+endsnippet
+
 snippet beg "begin{} / end{}" bA
 \\begin{$1}
 	$0
 \\end{$1}
+endsnippet
+
+snippet sec "section" b
+\section{$1}
+
+$0
+endsnippet
+
+snippet ssec "subsection" b
+\subsection{$1}
+
+$0
+endsnippet
+
+snippet sssec "subsubsection" b
+\subsubsection{$1}
+
+$0
 endsnippet
 
 priority 100
@@ -73,6 +95,14 @@ snippet fig "Figure environment" b
 	${2:\includegraphics[width=0.8\textwidth]{$3}}
 	\caption{${4:$3}}
 	\label{fig:${5:${3/\W+/-/g}}}
+\end{figure}
+endsnippet
+
+snippet ingr "Figure image environment" b
+\begin{figure}[${1:htpb}]
+	\centering
+	\includegraphics[width=0.5\columnwidth]{$2}
+	\caption{${3:$2}}
 \end{figure}
 endsnippet
 
@@ -294,7 +324,7 @@ snippet part "d/dx" w
 endsnippet
 
 context "math()"
-snippet sq "\sqrt{}" iA
+snippet SQ "\sqrt{}" iA
 \sqrt{${1:${VISUAL}}} $0
 endsnippet
 
