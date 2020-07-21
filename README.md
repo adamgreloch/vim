@@ -1,4 +1,7 @@
 # vim
 
-^C^C^CC^C:E:E;e:e;E;E)$##LR@FOIJVOFDS)FI)(I!@#K123oi12jmn0odifasjo
+<p align="center">
+  <img width="560" src="https://i.imgur.com/niwufF4.png">
+</p>
 
+My Vim configuration for efficient distraction-free writing and LaTeX
