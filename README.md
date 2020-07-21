@@ -1,7 +1,8 @@
 # vim
 
-<p align="center">
-  <img width="560" src="https://i.imgur.com/niwufF4.png">
+<p align="center" float="left">
+  <img width="45%" src="https://i.imgur.com/FpQJdE3.png">
+  <img width="45%" src="https://i.imgur.com/loUOOKB.png">
 </p>
 
 My Vim configuration for efficient distraction-free writing and LaTeX
