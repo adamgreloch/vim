@@ -21,9 +21,10 @@ set laststatus=2 " Statusline tweaks
 set diffopt+=vertical	" Vertical diff (for fugitive)
 set splitbelow " Split everything below (for term)
 set foldmethod=marker
-set clipboard=unnamedplus
 set spellcapcheck=
-
+if has('linux')
+	set clipboard=unnamedplus
+endif
 " Search
 set ic
 set hls
@@ -41,7 +42,6 @@ set undodir=~/.vim/tmp//
 " }}}
 " Language {{{
 language en_US.utf8
-
 " }}}
 " Linux-specific settings {{{
 if has('linux')
@@ -69,27 +69,8 @@ endif
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-" call vundle#begin('~/some/path/here')
 
-" let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
-
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-" plugin on GitHub repo
-" plugin from http://vim-scripts.org/vim/scripts.html
-" Plugin 'L9'
-" Git plugin not hosted on GitHub
-" Plugin 'git://git.wincent.com/command-t.git'
-" git repos on your local machine (i.e. when working on your own plugin)
-" Plugin 'file:///home/gmarik/path/to/plugin'
-" The sparkup vim script is in a subdirectory of this repo called vim.
-" Pass the path to set the runtimepath properly.
-" Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-" Install L9 and avoid a Naming conflict if you've already installed a
-" different version somewhere else.
-" Plugin 'ascenator/L9', {'name': 'newL9'}
 
 Plugin 'vim-airline/vim-airline'
 Plugin 'junegunn/fzf'
@@ -136,18 +117,18 @@ augroup VCenterCursor
 				\ let &scrolloff=winheight(win_getid())/3
 augroup END
 
-
-
 " Set NERDtree arrows to -/+
 let g:NERDTreeDirArrowExpandable = '+'
 let g:NERDTreeDirArrowCollapsible = '-'
 
 " Airline symbols
-if !exists('g:airline_symbols')
-	let g:airline_symbols = {}
-endif
+if has('linux')
+	if !exists('g:airline_symbols')
+		let g:airline_symbols = {}
+	endif
 
-let g:airline_symbols.branch = ''
+	let g:airline_symbols.branch = ''
+endif
 
 " }}}
 " Set gVim font {{{
@@ -158,9 +139,6 @@ if has('win32') || has('win64')
 else
 	set guifont=Monospace\ 12
 endif
-
-" }}}
-" Version Control {{{
 
 " }}}
 " Leaders {{{
@@ -186,20 +164,19 @@ inoremap <leader>A <esc>A
 inoremap <leader>w <esc>:w<cr>a
 
 map  <leader>s <Plug>(easymotion-bd-w)
-" nmap <Leader>s <Plug>(easymotion-overwin-w)
 
 nnoremap <leader>ep :e ~/Dropbox/papiery/
 
 " limelight
-nnoremap <leader>L :Limelight!! 0.8<cr>
+nnoremap <silent><leader>L :Limelight!! 0.8<cr>
 
 " }}}
 " FZF {{{
-nnoremap <silent> <leader>o :Files<CR>
-nnoremap <silent> <leader>oh :Files ~<CR>
-nnoremap <silent> <leader>og :Files ~/git/<CR>
-nnoremap <silent> <leader>op :Files ~/Dropbox/papiery/<CR>
-nnoremap <silent> <leader>od :Files ~/Dropbox/<CR>
+nnoremap <silent><leader>o :Files<CR>
+nnoremap <silent><leader>oh :Files ~<CR>
+nnoremap <silent><leader>og :Files ~/git/<CR>
+nnoremap <silent><leader>op :Files ~/Dropbox/papiery/<CR>
+nnoremap <silent><leader>od :Files ~/Dropbox/<CR>
 
 let g:fzf_layout = { 'down': '~30%' }
 let g:fzf_colors =
@@ -343,9 +320,9 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " Spellcheck {{{
 " If .add file was updated via git, recompile .spl
 for d in glob('~/.vim/spell/*.add', 1, 1)
-    if filereadable(d) && (!filereadable(d . '.spl') || getftime(d) > getftime(d . '.spl'))
-        silent exec 'mkspell! ' . fnameescape(d)
-    endif
+	if filereadable(d) && (!filereadable(d . '.spl') || getftime(d) > getftime(d . '.spl'))
+		silent exec 'mkspell! ' . fnameescape(d)
+	endif
 endfor
 
 " }}}
@@ -383,7 +360,14 @@ if empty(v:servername) && exists('*remote_startserver')
 endif
 
 let g:vimtex_fold_enabled = 1
-let g:vimtex_view_method = 'zathura'
+
+if has('linux')
+	let g:vimtex_view_method = 'zathura'
+	let g:vimtex_compiler_latexmk = {
+				\  'callback' : 0,
+				\}
+endif
+
 let g:tex_conceal='abdmg'
 let g:vimtex_quickfix_open_on_warning = 0
 
