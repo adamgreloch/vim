@@ -13,18 +13,14 @@ set backspace=2 " make backspace work like most other programs
 set wildmenu " Tab completion
 set cmdheight=1
 set termguicolors
-set t_Co=256
 set guioptions=cgt
 set smartindent
 set numberwidth=4
-set laststatus=2 " Statusline tweaks
+set laststatus=1 " Statusline tweaks (will try living without airline for now)
 set diffopt+=vertical	" Vertical diff (for fugitive)
 set splitbelow " Split everything below (for term)
 set foldmethod=marker
 set spellcapcheck=
-if has('linux')
-	set clipboard=unnamedplus
-endif
 " Search
 set ic
 set hls
@@ -72,7 +68,7 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
 
-Plugin 'vim-airline/vim-airline'
+"Plugin 'vim-airline/vim-airline'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'preservim/nerdtree'
@@ -88,6 +84,7 @@ Plugin 'junegunn/limelight.vim'
 Plugin 'easymotion/vim-easymotion'
 Plugin 'tpope/vim-dispatch'
 Plugin 'freitass/todo.txt-vim'
+Plugin 'jamessan/vim-gnupg'
 
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
@@ -201,6 +198,9 @@ endif
 let g:UltiSnipsSnippetDirectories=["ultisnips"]
 " }}}
 " Misc {{{
+" GPG
+let g:GPGDefaultRecipients = ['zplhatesbananas@gmail.com']
+
 " Toggle folding
 nnoremap z<Space> za
 
@@ -231,7 +231,6 @@ endfunction
 
 function! s:goyo_leave()
 	set guicursor-=a:blinkon0
-	AirlineRefresh " Fixes airline-theme not being applied after leaving Goyo
 endfunction
 
 autocmd! User GoyoEnter call <SID>goyo_enter()
@@ -347,7 +346,7 @@ endfunction
 
 " Maybe a better way would be to use a modeline i.e. # vim:spelllang=en/pl?
 
-autocmd FileType markdown,mkd      call Prose()
+autocmd FileType markdown,mkd,txt  call Prose()
 autocmd FileType tex 							 call pencil#init({'wrap': 'soft'})
 
 " }}}
@@ -367,6 +366,11 @@ if has('linux')
 				\  'callback' : 0,
 				\}
 endif
+let g:Tex_DefaultTargetFormat = 'pdf'
+let g:Tex_CompileRule_pdf = 'ps2pdf $*.ps'
+let g:Tex_CompileRule_dvi = 'latex --interaction=nonstopmode $*'
+let g:Tex_CompileRule_ps = 'dvips -Ppdf -o $*.ps $*.dvi'
+let g:Tex_FormatDependency_pdf = 'dvi,ps,pdf'
 
 let g:tex_conceal='abdmg'
 let g:vimtex_quickfix_open_on_warning = 0
@@ -376,14 +380,16 @@ let g:vimtex_quickfix_open_on_warning = 0
 " Creates a new .md file with a date on top and appends time of every new entry
 " just like org-journal
 function! JournalOpen()
-	return ':e ~/Dropbox/vimjrnl/'.strftime('%Y%m%d').'.md'
+	return ':e ~/Dropbox/journal/'.strftime('%Y%m%d').'.txt.gpg'
 endfunction
 
 nnoremap <expr> <leader>oj JournalOpen()
 
-autocmd BufNewFile ~/Dropbox/vimjrnl/* :$pu!=strftime('# %A, %d.%m.%y')
-autocmd BufNewFile ~/Dropbox/vimjrnl/* :$pu=strftime('## %H:%M ') | :normal GA
-autocmd BufRead ~/Dropbox/vimjrnl/* $pu=strftime('## %H:%M ') | :normal GA
+autocmd BufNewFile ~/Dropbox/journal/* :$pu!=strftime('%A, %d.%m.%y')
+autocmd BufNewFile ~/Dropbox/journal/* :$pu=strftime('%H:%M ') | :normal GA
+autocmd BufNewFile ~/Dropbox/journal/* setlocal tw=78
+autocmd BufRead ~/Dropbox/journal/* setlocal tw=78
+autocmd BufRead ~/Dropbox/journal/* $pu=strftime('%H:%M ') | :normal GA
 
 " }}}
 " }}}
