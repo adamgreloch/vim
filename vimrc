@@ -12,7 +12,6 @@ set mouse=a
 set backspace=2 " make backspace work like most other programs
 set wildmenu " Tab completion
 set cmdheight=1
-"set termguicolors
 set guioptions=cgt
 set smartindent
 set numberwidth=4
@@ -50,10 +49,8 @@ if has('win32') || has('win64')
 	language time pl_PL
 	let $PDFVIEWER = "SumatraPDF"
 	let &pythonthreedll = 'C:\python37\python37.dll'
-	set runtimepath=path/to/home.vim,$VIM/vimfiles,$VIMRUNTIME,$VIM/vimfiles/after,path/to/home.vim/after
 	nnoremap <silent> <F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen_64.dll", "ToggleFullScreen", 0)<CR>
 endif
-
 " }}}
 " Vundle config {{{
 
@@ -68,11 +65,9 @@ call vundle#begin()
 
 Plugin 'VundleVim/Vundle.vim'
 
-"Plugin 'vim-airline/vim-airline'
 Plugin 'junegunn/fzf'
 Plugin 'junegunn/fzf.vim'
 Plugin 'preservim/nerdtree'
-Plugin 'derekmcloughlin/gvimfullscreen_win32'
 Plugin 'reedes/vim-pencil'
 Plugin 'tpope/vim-fugitive'
 Plugin 'morhetz/gruvbox'
@@ -83,15 +78,18 @@ Plugin 'vim-pandoc/vim-pandoc'
 Plugin 'junegunn/limelight.vim'
 Plugin 'easymotion/vim-easymotion'
 Plugin 'tpope/vim-dispatch'
-Plugin 'freitass/todo.txt-vim'
-Plugin 'jamessan/vim-gnupg'
-Plugin 'dylanaraps/wal.vim'
-Plugin 'itchyny/lightline.vim'
-
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
+Plugin 'freitass/todo.txt-vim'
+Plugin 'jamessan/vim-gnupg'
+Plugin 'itchyny/lightline.vim'
 
-" All of your Plugins must be added before the following line
+if has('linux')
+	Plugin 'dylanaraps/wal.vim'
+else
+	Plugin 'derekmcloughlin/gvimfullscreen_win32'
+endif
+
 call vundle#end()
 filetype plugin indent on
 
@@ -100,13 +98,15 @@ filetype plugin indent on
 " Set theme
 if has('linux')
 	colorscheme wal
+	let lightline_colorscheme = '16colors'
 else
 	colorscheme gruvbox
 	set background=dark
+	let lightline_colorscheme = 'gruvbox'
 endif
 
 let g:lightline = {
-      \ 'colorscheme': '16color',
+      \ 'colorscheme': lightline_colorscheme,
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
@@ -117,7 +117,6 @@ let g:lightline = {
       \ }
 
 " Set spellcheck highlight to bold red in term
-
 hi SpellBad cterm=bold ctermfg=167
 
 " Disable bells
@@ -135,25 +134,27 @@ augroup END
 let g:NERDTreeDirArrowExpandable = '+'
 let g:NERDTreeDirArrowCollapsible = '-'
 
-" Airline symbols
-if has('linux')
-	if !exists('g:airline_symbols')
-		let g:airline_symbols = {}
-	endif
-
-	let g:airline_symbols.branch = ''
-endif
-
 " }}}
 " Set gVim font {{{
 if has('win32') || has('win64')
-	set guifont=Meslo_LG_S:h14:cEASTEUROPE:qDRAFT
-	nnoremap <leader>f14 :set guifont=Meslo_LG_S:h14:cEASTEUROPE:qDRAFT<cr>
-	nnoremap <leader>f18 :set guifont=Meslo_LG_S:h18:cEASTEUROPE:qDRAFT<cr>
+	set guifont=Meslo_LG_S:h13
+	function! FontSizePlus ()
+		let l:gf_size_whole = matchstr(&guifont, '\(:h\)\@<=\d\+$')
+		let l:gf_size_whole = l:gf_size_whole + 1
+		let l:new_font_size = ':h'.l:gf_size_whole
+		let &guifont = substitute(&guifont, ':h\d\+$', l:new_font_size, '')
+	endfunction
+	function! FontSizeMinus ()
+		let l:gf_size_whole = matchstr(&guifont, '\(:h\)\@<=\d\+$')
+		let l:gf_size_whole = l:gf_size_whole - 1
+		let l:new_font_size = ':h'.l:gf_size_whole
+		let &guifont = substitute(&guifont, ':h\d\+$', l:new_font_size, '')
+	endfunction
+	nnoremap <C-m> :call FontSizeMinus()<cr>
+	nnoremap <C-p> :call FontSizePlus()<cr>
 else
 	set guifont=Monospace\ 12
 endif
-
 " }}}
 " Leaders {{{
 nnoremap <leader>n :NERDTree %:h<cr>
