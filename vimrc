@@ -12,11 +12,11 @@ set mouse=a
 set backspace=2 " make backspace work like most other programs
 set wildmenu " Tab completion
 set cmdheight=1
-set termguicolors
+"set termguicolors
 set guioptions=cgt
 set smartindent
 set numberwidth=4
-set laststatus=1 " Statusline tweaks (will try living without airline for now)
+set laststatus=2
 set diffopt+=vertical	" Vertical diff (for fugitive)
 set splitbelow " Split everything below (for term)
 set foldmethod=marker
@@ -85,6 +85,8 @@ Plugin 'easymotion/vim-easymotion'
 Plugin 'tpope/vim-dispatch'
 Plugin 'freitass/todo.txt-vim'
 Plugin 'jamessan/vim-gnupg'
+Plugin 'dylanaraps/wal.vim'
+Plugin 'itchyny/lightline.vim'
 
 Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
@@ -96,8 +98,23 @@ filetype plugin indent on
 " }}}
 " GUI tweaks {{{
 " Set theme
-colorscheme gruvbox
-set background=dark
+if has('linux')
+	colorscheme wal
+else
+	colorscheme gruvbox
+	set background=dark
+endif
+
+let g:lightline = {
+      \ 'colorscheme': '16color',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+      \ },
+      \ 'component_function': {
+      \   'gitbranch': 'FugitiveHead'
+      \ },
+      \ }
 
 " Set spellcheck highlight to bold red in term
 
@@ -150,10 +167,13 @@ nnoremap <leader>q :q<cr>
 nnoremap <leader>b <C-^>
 nnoremap <leader>G :Git<cr>
 nnoremap <leader>B :Buffers<cr>
-nnoremap <silent><leader>r :set relativenumber!<cr>:set cursorline!<cr>
-nnoremap <silent><leader>R :set number!<cr>
+nnoremap <silent><leader>r :set relativenumber!<cr>:set number!<cr>
 nnoremap <leader>cl1 :set conceallevel=1<cr>
 nnoremap <leader>cl0 :set conceallevel=0<cr>
+
+" Change Vim working directory to the dir of the currently open file
+nnoremap <leader>cd :cd %:p:h 
+nnoremap <leader>ma :! maim -s -u -d 1 img/
 
 inoremap <leader>q <esc>:q<cr>a
 inoremap <leader>I <esc>I
@@ -165,7 +185,11 @@ map  <leader>s <Plug>(easymotion-bd-w)
 nnoremap <leader>ep :e ~/Dropbox/papiery/
 
 " limelight
-nnoremap <silent><leader>L :Limelight!! 0.8<cr>
+if has('linux')
+	nnoremap <silent><leader>L :Limelight!!<cr>
+else
+	nnoremap <silent><leader>L :Limelight!! 0.8<cr>
+endif
 
 " }}}
 " FZF {{{
@@ -215,6 +239,7 @@ function! AddLastLine()
 endfunction
 
 autocmd BufWritePre * call AddLastLine()
+
 
 " Todo.txt-vim detect ft
 autocmd BufNewFile,BufRead [Tt]odo.txt set filetype=todo
@@ -362,15 +387,12 @@ let g:vimtex_fold_enabled = 1
 
 if has('linux')
 	let g:vimtex_view_method = 'zathura'
-	let g:vimtex_compiler_latexmk = {
-				\  'callback' : 0,
-				\}
 endif
-let g:Tex_DefaultTargetFormat = 'pdf'
-let g:Tex_CompileRule_pdf = 'ps2pdf $*.ps'
-let g:Tex_CompileRule_dvi = 'latex --interaction=nonstopmode $*'
-let g:Tex_CompileRule_ps = 'dvips -Ppdf -o $*.ps $*.dvi'
-let g:Tex_FormatDependency_pdf = 'dvi,ps,pdf'
+"let g:Tex_DefaultTargetFormat = 'pdf'
+"let g:Tex_CompileRule_pdf = 'ps2pdf $*.ps'
+"let g:Tex_CompileRule_dvi = 'latex --interaction=nonstopmode $*'
+"let g:Tex_CompileRule_ps = 'dvips -Ppdf -o $*.ps $*.dvi'
+"let g:Tex_FormatDependency_pdf = 'dvi,ps,pdf'
 
 let g:tex_conceal='abdmg'
 let g:vimtex_quickfix_open_on_warning = 0
