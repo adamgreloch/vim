@@ -15,7 +15,7 @@ set cmdheight=1
 set guioptions=cgt
 set smartindent
 set numberwidth=4
-set laststatus=2
+set laststatus=1
 set diffopt+=vertical	" Vertical diff (for fugitive)
 set splitbelow " Split everything below (for term)
 set foldmethod=marker
@@ -73,7 +73,6 @@ Plugin 'tpope/vim-fugitive'
 Plugin 'morhetz/gruvbox'
 Plugin 'junegunn/goyo.vim'
 Plugin 'lervag/vimtex'
-Plugin 'hugolgst/vimsence'
 Plugin 'vim-pandoc/vim-pandoc'
 Plugin 'junegunn/limelight.vim'
 Plugin 'easymotion/vim-easymotion'
@@ -82,10 +81,12 @@ Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'freitass/todo.txt-vim'
 Plugin 'jamessan/vim-gnupg'
-Plugin 'itchyny/lightline.vim'
+"Plugin 'itchyny/lightline.vim'
+Plugin 'plasticboy/vim-markdown'
 
 if has('linux')
-	Plugin 'dylanaraps/wal.vim'
+	Plugin 'noahfrederick/vim-noctu'
+	"Plugin 'dylanaraps/wal.vim'
 else
 	Plugin 'derekmcloughlin/gvimfullscreen_win32'
 endif
@@ -95,29 +96,56 @@ filetype plugin indent on
 
 " }}}
 " GUI tweaks {{{
+"set t_Co=16
+
+set laststatus=2
+"set statusline=
+"set statusline+=%F
+"set statusline+=%l
+
+set statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)
+
 " Set theme
 if has('linux')
-	colorscheme wal
-	let lightline_colorscheme = '16colors'
+	"colorscheme wal
+	"let lightline_colorscheme = '16color'
+	colorscheme noctu
+	"colorscheme ron
 else
 	colorscheme gruvbox
 	set background=dark
 	let lightline_colorscheme = 'gruvbox'
 endif
 
-let g:lightline = {
-      \ 'colorscheme': lightline_colorscheme,
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'FugitiveHead'
-      \ },
-      \ }
+"let g:lightline = {
+"      \ 'colorscheme': lightline_colorscheme,
+"      \ 'active': {
+"      \   'left': [ [ 'mode', 'paste' ],
+"      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+"      \ },
+"      \ 'component_function': {
+"      \   'gitbranch': 'FugitiveHead'
+"      \ },
+"      \ }
 
 " Set spellcheck highlight to bold red in term
 hi SpellBad cterm=bold ctermfg=167
+
+" Make vertical and horizontal window borders 
+function! SetBorders()
+	if winnr('$') > 1
+		set fillchars+=stlnc:-
+		set fillchars+=stl:-
+	else
+		set fillchars-=stlnc:-
+		set fillchars-=stl:-
+	endif
+endfunction
+
+augroup SetBorders
+	au!
+	"au WinNew,WinEnter,WinLeave *,*.* call SetBorders()
+augroup END
 
 " Disable bells
 set noerrorbells visualbell t_vb=
@@ -201,6 +229,7 @@ nnoremap <silent><leader>op :Files ~/Dropbox/papiery/<CR>
 nnoremap <silent><leader>od :Files ~/Dropbox/<CR>
 
 let g:fzf_layout = { 'down': '~30%' }
+
 let g:fzf_colors =
 			\ { 'fg':      ['fg', 'Normal'],
 			\ 'bg':      ['bg', 'Normal'],
@@ -259,8 +288,8 @@ function! s:goyo_leave()
 	set guicursor-=a:blinkon0
 endfunction
 
-autocmd! User GoyoEnter call <SID>goyo_enter()
-autocmd! User GoyoLeave call <SID>goyo_leave()
+autocmd! User GoyoEnter nested call <SID>goyo_enter()
+autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
 " Limelight settings
 let g:limelight_bop = '^.*$'
@@ -378,12 +407,26 @@ autocmd FileType tex 							 call pencil#init({'wrap': 'soft'})
 " }}}
 " Markdown {{{
 let g:vim_markdown_folding_disabled = 1
+function! NoIndent()
+	setlocal noautoindent
+	setlocal nocindent
+	set indentexpr=""
+endfunction
+
+let g:vim_markdown_new_list_item_indent = 0
+
+autocmd FileType markdown call NoIndent()
+autocmd BufEnter * set fo-=n fo-=r
 " }}}
 " LaTeX (vimtex) {{{
-if empty(v:servername) && exists('*remote_startserver')
-	call remote_startserver('VIM')
-endif
+" General configuration {{{
+"if empty(v:servername) && exists('*remote_startserver')
+"	call remote_startserver('VIM')
+"endif
 
+let g:vimtex_motion_matchparen = 0
+let g:vimtex_indent_enabled = 0
+let g:vimtex_matchparen_enabled = 0
 let g:vimtex_fold_enabled = 1
 
 if has('linux')
@@ -397,7 +440,7 @@ endif
 
 let g:tex_conceal='abdmg'
 let g:vimtex_quickfix_open_on_warning = 0
-
+" }}}
 " }}}
 " Journal {{{
 " Creates a new .md file with a date on top and appends time of every new entry
