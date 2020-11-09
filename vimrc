@@ -5,21 +5,22 @@ autocmd!
 
 syntax on
 
-" Set UTF-8 encoding
 set encoding=utf8
-
 set mouse=a
-set backspace=2 " make backspace work like most other programs
-set wildmenu " Tab completion
+set backspace=2 			" make backspace work like most other programs
+set wildmenu 					" tab completion
 set cmdheight=1
 set guioptions=cgt
 set smartindent
 set numberwidth=4
 set laststatus=1
-set diffopt+=vertical	" Vertical diff (for fugitive)
-set splitbelow " Split everything below (for term)
+set diffopt+=vertical	" vertical diff (for fugitive)
+set splitbelow 				" split everything below (for term)
 set foldmethod=marker
 set spellcapcheck=
+set relativenumber
+set number
+
 " Search
 set ic
 set hls
@@ -38,14 +39,13 @@ set undodir=~/.vim/tmp//
 " Language {{{
 language en_US.utf8
 " }}}
-" Linux-specific settings {{{
+" OS specific settings {{{
 if has('linux')
 	language time pl_PL.utf8
 	let $PDFVIEWER = "zathura"
 endif
-" }}}
-" Windows-specific settings {{{
-if has('win32') || has('win64')
+" although I could just make an else statement, this is safer:
+if has('win32') || has('win64') 
 	language time pl_PL
 	let $PDFVIEWER = "SumatraPDF"
 	let &pythonthreedll = 'C:\python37\python37.dll'
@@ -54,12 +54,13 @@ endif
 " }}}
 " Vundle config {{{
 
-"Vundle bootstrap
+" Vundle bootstrap
+" TODO make it work for Windows 
 if !filereadable($HOME . '/.vim/bundle/Vundle.vim/.git/config') && confirm("Clone Vundle?","Y\nn") == 1
 	exec '!git clone https://github.com/gmarik/Vundle.vim ~/.vim/bundle/Vundle.vim/'
 endif
 
-" set the runtime path to include Vundle and initialize
+" sets the runtime path to include Vundle and initializes it
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
@@ -70,7 +71,6 @@ Plugin 'junegunn/fzf.vim'
 Plugin 'preservim/nerdtree'
 Plugin 'reedes/vim-pencil'
 Plugin 'tpope/vim-fugitive'
-Plugin 'morhetz/gruvbox'
 Plugin 'junegunn/goyo.vim'
 Plugin 'lervag/vimtex'
 Plugin 'vim-pandoc/vim-pandoc'
@@ -81,13 +81,14 @@ Plugin 'SirVer/ultisnips'
 Plugin 'honza/vim-snippets'
 Plugin 'freitass/todo.txt-vim'
 Plugin 'jamessan/vim-gnupg'
-"Plugin 'itchyny/lightline.vim'
 Plugin 'plasticboy/vim-markdown'
+Plugin 'jsit/toast.vim'
+Plugin 'chriskempson/base16-vim'
 
 if has('linux')
 	Plugin 'noahfrederick/vim-noctu'
-	"Plugin 'dylanaraps/wal.vim'
 else
+	Plugin 'morhetz/gruvbox'
 	Plugin 'derekmcloughlin/gvimfullscreen_win32'
 endif
 
@@ -96,56 +97,21 @@ filetype plugin indent on
 
 " }}}
 " GUI tweaks {{{
-"set t_Co=16
 
 set laststatus=2
-"set statusline=
-"set statusline+=%F
-"set statusline+=%l
-
 set statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)
 
 " Set theme
 if has('linux')
-	"colorscheme wal
-	"let lightline_colorscheme = '16color'
 	colorscheme noctu
-	"colorscheme ron
 else
 	colorscheme gruvbox
 	set background=dark
-	let lightline_colorscheme = 'gruvbox'
 endif
-
-"let g:lightline = {
-"      \ 'colorscheme': lightline_colorscheme,
-"      \ 'active': {
-"      \   'left': [ [ 'mode', 'paste' ],
-"      \             [ 'gitbranch', 'readonly', 'filename', 'modified' ] ]
-"      \ },
-"      \ 'component_function': {
-"      \   'gitbranch': 'FugitiveHead'
-"      \ },
-"      \ }
 
 " Set spellcheck highlight to bold red in term
 hi SpellBad cterm=bold ctermfg=167
-
-" Make vertical and horizontal window borders 
-function! SetBorders()
-	if winnr('$') > 1
-		set fillchars+=stlnc:-
-		set fillchars+=stl:-
-	else
-		set fillchars-=stlnc:-
-		set fillchars-=stl:-
-	endif
-endfunction
-
-augroup SetBorders
-	au!
-	"au WinNew,WinEnter,WinLeave *,*.* call SetBorders()
-augroup END
+hi VertSplit ctermfg=2
 
 " Disable bells
 set noerrorbells visualbell t_vb=
@@ -165,21 +131,7 @@ let g:NERDTreeDirArrowCollapsible = '-'
 " }}}
 " Set gVim font {{{
 if has('win32') || has('win64')
-	set guifont=Meslo_LG_S:h13
-	function! FontSizePlus ()
-		let l:gf_size_whole = matchstr(&guifont, '\(:h\)\@<=\d\+$')
-		let l:gf_size_whole = l:gf_size_whole + 1
-		let l:new_font_size = ':h'.l:gf_size_whole
-		let &guifont = substitute(&guifont, ':h\d\+$', l:new_font_size, '')
-	endfunction
-	function! FontSizeMinus ()
-		let l:gf_size_whole = matchstr(&guifont, '\(:h\)\@<=\d\+$')
-		let l:gf_size_whole = l:gf_size_whole - 1
-		let l:new_font_size = ':h'.l:gf_size_whole
-		let &guifont = substitute(&guifont, ':h\d\+$', l:new_font_size, '')
-	endfunction
-	nnoremap <C-m> :call FontSizeMinus()<cr>
-	nnoremap <C-p> :call FontSizePlus()<cr>
+	set guifont=Meslo_LG_S:h11
 else
 	set guifont=Monospace\ 12
 endif
@@ -197,16 +149,13 @@ nnoremap <leader>b <C-^>
 nnoremap <leader>G :Git<cr>
 nnoremap <leader>B :Buffers<cr>
 nnoremap <silent><leader>r :set relativenumber!<cr>:set number!<cr>
-nnoremap <leader>cl1 :set conceallevel=1<cr>
+nnoremap <leader>cl2 :set conceallevel=2<cr>
 nnoremap <leader>cl0 :set conceallevel=0<cr>
 
 " Change Vim working directory to the dir of the currently open file
 nnoremap <leader>cd :cd %:p:h 
 nnoremap <leader>ma :! maim -s -u -d 1 img/
 
-inoremap <leader>q <esc>:q<cr>a
-inoremap <leader>I <esc>I
-inoremap <leader>A <esc>A
 inoremap <leader>w <esc>:w<cr>a
 
 map  <leader>s <Plug>(easymotion-bd-w)
@@ -295,6 +244,7 @@ autocmd! User GoyoLeave nested call <SID>goyo_leave()
 let g:limelight_bop = '^.*$'
 let g:limelight_eop = '\n'
 let g:limelight_paragraph_span = 3
+let g:limelight_conceal_ctermfg = 236
 
 "}}}
 " Create parent directory on save because I'm lazy {{{
@@ -384,7 +334,12 @@ endfor
 let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
 let g:pandoc#command#latex_engine = "pdflatex"
 nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Dropbox/papiery/defaults.latex"<cr>
-nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
+
+if has("linux")
+	nnoremap <expr> <leader>oo ":!".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr><cr>"
+else
+	nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")."& ".expand("%:p:r").".pdf<cr>"
+endif
 
 " }}}
 " Pencil {{{
@@ -424,6 +379,7 @@ autocmd BufEnter * set fo-=n fo-=r
 "	call remote_startserver('VIM')
 "endif
 
+let g:tex_flavor = "latex"
 let g:vimtex_motion_matchparen = 0
 let g:vimtex_indent_enabled = 0
 let g:vimtex_matchparen_enabled = 0

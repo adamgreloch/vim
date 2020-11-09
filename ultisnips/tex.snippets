@@ -58,19 +58,24 @@ endsnippet
 snippet sec "section" b
 \section{$1}
 
-$0
 endsnippet
 
 snippet ssec "subsection" b
 \subsection{$1}
 
-$0
 endsnippet
 
 snippet sssec "subsubsection" b
 \subsubsection{$1}
 
-$0
+endsnippet
+
+snippet tcol "tcolorbox" b
+\begin{tcolorbox}
+	\textbf{$1}\\\
+	$2
+\end{tcolorbox}
+
 endsnippet
 
 priority 100
@@ -473,24 +478,11 @@ snippet norm "norm" iA
 \|$1\|$0
 endsnippet
 
-priority 100
-context "math()"
-snippet '(?<!\\)(sin|cos|arccot|cot|csc|ln|log|exp|star|perp)' "ln" rwA
-\\`!p snip.rv = match.group(1)`
-endsnippet
-
 priority 300
 context "math()"
 snippet dint "integral" wA
 \int_{${1:-\infty}}^{${2:\infty}} ${3:${VISUAL}} $0
 endsnippet
-
-priority 200
-context "math()"
-snippet '(?<!\\)(arcsin|arccos|arctan|arccot|arccsc|arcsec|pi|zeta|int)' "ln" rwA
-\\`!p snip.rv = match.group(1)`
-endsnippet
-
 
 priority 100
 context "math()"
@@ -546,21 +538,6 @@ snippet || "mid" iA
  \mid 
 endsnippet
 
-
-context "math()"
-snippet cc "subset" Ai
-\subset 
-endsnippet
-
-snippet notin "not in " iA
-\not\in 
-endsnippet
-
-context "math()"
-snippet inn "in " iA
-\in 
-endsnippet
-
 snippet NN "n" iA
 \N
 endsnippet
@@ -612,19 +589,10 @@ _\text{$1} $0
 endsnippet
 
 context "math()"
-snippet tt "text" iA
-\text{$1}$0
-endsnippet
-
-context "math()"
 snippet case "cases" wA
 \begin{cases}
 	$1
 \end{cases}
-endsnippet
-
-snippet SI "SI" iA
-\SI{$1}{$2}
 endsnippet
 
 snippet bigfun "Big function" iA
