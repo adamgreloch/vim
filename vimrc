@@ -19,6 +19,7 @@ set splitbelow 				" split everything below (for term)
 set foldmethod=marker
 set spellcapcheck=
 set relativenumber
+set cursorline
 set number
 
 " Search
@@ -83,9 +84,11 @@ Plugin 'freitass/todo.txt-vim'
 Plugin 'jamessan/vim-gnupg'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'jsit/toast.vim'
-Plugin 'chriskempson/base16-vim'
+Plugin 'davidhalter/jedi-vim'
+Plugin 'rhysd/vim-grammarous'
 
 if has('linux')
+    "Plugin 'chriskempson/base16-vim'
 	Plugin 'noahfrederick/vim-noctu'
 else
 	Plugin 'morhetz/gruvbox'
@@ -109,9 +112,16 @@ else
 	set background=dark
 endif
 
-" Set spellcheck highlight to bold red in term
-hi SpellBad cterm=bold ctermfg=167
-hi VertSplit ctermfg=2
+" Goyo breaks my custom styling so I packed them
+" into a function and invoke again on s:goyo_leave()
+function! CustomHi()
+	hi SpellBad cterm=bold ctermfg=167
+	hi VertSplit ctermfg=2
+	hi CursorLine cterm=none ctermbg=234
+	hi CursorLineNr cterm=bold ctermbg=234
+endfunction
+
+call CustomHi()
 
 " Disable bells
 set noerrorbells visualbell t_vb=
@@ -151,6 +161,8 @@ nnoremap <leader>B :Buffers<cr>
 nnoremap <silent><leader>r :set relativenumber!<cr>:set number!<cr>
 nnoremap <leader>cl2 :set conceallevel=2<cr>
 nnoremap <leader>cl0 :set conceallevel=0<cr>
+nnoremap <silent><leader>sc :set scrolloff=999<cr>
+nnoremap <silent><leader>nsc :let &scrolloff=winheight(win_getid())/3<cr>
 
 " Change Vim working directory to the dir of the currently open file
 nnoremap <leader>cd :cd %:p:h 
@@ -164,9 +176,9 @@ nnoremap <leader>ep :e ~/Dropbox/papiery/
 
 " limelight
 if has('linux')
-	nnoremap <silent><leader>L :Limelight!!<cr>
+	nnoremap <silent><leader>L :Limelight!!<cr>:set cursorline!<cr>
 else
-	nnoremap <silent><leader>L :Limelight!! 0.8<cr>
+	nnoremap <silent><leader>L :Limelight!! 0.8<cr>:set cursorline!<cr>
 endif
 
 " }}}
@@ -235,6 +247,7 @@ endfunction
 
 function! s:goyo_leave()
 	set guicursor-=a:blinkon0
+	call CustomHi()
 endfunction
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
@@ -281,6 +294,11 @@ nnoremap <C-H> <C-W><C-H>
 
 " }}}
 " Coding {{{
+" vim-jedi {{{
+let g:jedi#auto_initialization = '0'
+let g:jedi#show_call_signatures = "1"
+let g:jedi#show_call_signatures_delay = "1000"
+" }}}
 " Python {{{
 " PEP 8
 function! PepStandards()
@@ -333,6 +351,9 @@ endfor
 " pandoc {{{
 let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
 let g:pandoc#command#latex_engine = "pdflatex"
+"let g:pandoc#command#autoexec_on_writes = '1'
+"let g:pandoc#command#autoexec_command = ':Pandoc pdf --template="~/Dropbox/papiery/defaults.latex"'
+
 nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Dropbox/papiery/defaults.latex"<cr>
 
 if has("linux")
@@ -348,9 +369,10 @@ let g:pencil#map#suspend_af = 'K'
 let g:pencil#conceallevel = 0
 
 function! Prose()
-	call pencil#init({'wrap': 'hard', 'textwidth': '78'})
+	call pencil#init({'wrap': 'hard', 'textwidth': '79'})
 	nnoremap <buffer> k gk
 	nnoremap <buffer> j gj
+	setlocal statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %{wordcount().words}\ w\ %=\ %P%)
 	set spelllang=en,pl
 endfunction
 
@@ -368,10 +390,14 @@ function! NoIndent()
 	set indentexpr=""
 endfunction
 
+" no more auto bullets
+" https://vi.stackexchange.com/questions/12000/prevent-neovim-from-breaking-one-markdown-bullet-point-into-multiple-ones
+set fo-=q
+
 let g:vim_markdown_new_list_item_indent = 0
 
 autocmd FileType markdown call NoIndent()
-autocmd BufEnter * set fo-=n fo-=r
+autocmd BufEnter * set fo-=n fo-=r fo-=q
 " }}}
 " LaTeX (vimtex) {{{
 " General configuration {{{
