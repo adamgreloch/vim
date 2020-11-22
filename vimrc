@@ -295,7 +295,15 @@ nnoremap <C-H> <C-W><C-H>
 " }}}
 " Coding {{{
 " vim-jedi {{{
-let g:jedi#auto_initialization = '0'
+let g:jedi#auto_initialization = 0
+function! CallJedi()
+    setlocal omnifunc=jedi#completions
+    let g:jedi#max_doc_height = 50
+    nnoremap <silent> <buffer> <localleader>r :call jedi#rename()<cr>
+    nnoremap <silent> <buffer> K :call jedi#show_documentation()<cr>
+    call jedi#configure_call_signatures()
+endfunction
+
 let g:jedi#show_call_signatures = "1"
 let g:jedi#show_call_signatures_delay = "1000"
 " }}}
@@ -312,6 +320,7 @@ function! PepStandards()
 endfunction
 
 au BufNewFile,BufRead *.py :call PepStandards()
+au BufNewFile,BufRead *.py :call CallJedi()
 
 " Run current .py
 autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
@@ -414,11 +423,20 @@ let g:vimtex_fold_enabled = 1
 if has('linux')
 	let g:vimtex_view_method = 'zathura'
 endif
-"let g:Tex_DefaultTargetFormat = 'pdf'
-"let g:Tex_CompileRule_pdf = 'ps2pdf $*.ps'
-"let g:Tex_CompileRule_dvi = 'latex --interaction=nonstopmode $*'
-"let g:Tex_CompileRule_ps = 'dvips -Ppdf -o $*.ps $*.dvi'
-"let g:Tex_FormatDependency_pdf = 'dvi,ps,pdf'
+
+let g:vimtex_compiler_latexmk = {
+		\ 'build_dir' : 'build',
+		\ 'callback' : 1,
+		\ 'continuous' : 1,
+		\ 'executable' : 'latexmk',
+		\ 'hooks' : [],
+		\ 'options' : [
+		\   '-verbose',
+		\   '-file-line-error',
+		\   '-synctex=1',
+		\   '-interaction=nonstopmode',
+		\ ],
+		\}
 
 let g:tex_conceal='abdmg'
 let g:vimtex_quickfix_open_on_warning = 0
@@ -435,8 +453,8 @@ nnoremap <expr> <leader>oj JournalOpen()
 
 autocmd BufNewFile ~/Dropbox/journal/* :$pu!=strftime('%A, %d.%m.%y')
 autocmd BufNewFile ~/Dropbox/journal/* :$pu=strftime('%H:%M ') | :normal GA
-autocmd BufNewFile ~/Dropbox/journal/* setlocal tw=78
-autocmd BufRead ~/Dropbox/journal/* setlocal tw=78
+autocmd BufNewFile ~/Dropbox/journal/* setlocal tw=79
+autocmd BufRead ~/Dropbox/journal/* setlocal tw=79
 autocmd BufRead ~/Dropbox/journal/* $pu=strftime('%H:%M ') | :normal GA
 
 " }}}
