@@ -86,6 +86,7 @@ Plugin 'plasticboy/vim-markdown'
 Plugin 'jsit/toast.vim'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'rhysd/vim-grammarous'
+Plugin 'dense-analysis/ale'
 
 if has('linux')
     "Plugin 'chriskempson/base16-vim'
@@ -222,16 +223,6 @@ nnoremap z<Space> za
 " Some format options
 au FileType vim set fo-=c fo-=r fo-=o
 
-" Add/check for last line break
-function! AddLastLine()
-	if getline('$') !~ "^$"
-		call append(line('$'), '')
-	endif
-endfunction
-
-autocmd BufWritePre * call AddLastLine()
-
-
 " Todo.txt-vim detect ft
 autocmd BufNewFile,BufRead [Tt]odo.txt set filetype=todo
 autocmd BufNewFile,BufRead *.[Tt]odo.txt set filetype=todo
@@ -285,6 +276,11 @@ inoremap <C-k> <C-o>gk
 inoremap <C-h> <Left>
 inoremap <C-l> <Right>
 inoremap <C-j> <C-o>gj
+
+" Extremes
+
+nnoremap H ^
+nnoremap L $
 
 " Focus movement
 nnoremap <C-J> <C-W><C-J>
