@@ -140,7 +140,12 @@ let g:NERDTreeDirArrowExpandable = '+'
 let g:NERDTreeDirArrowCollapsible = '-'
 
 " }}}
-" Set gVim font {{{
+" GVIM/Windows tweaks {{{
+set langmenu=en_US
+let $LANG = 'en_US'
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+
 if has('win32') || has('win64')
 	set guifont=Meslo_LG_S:h11
 else
@@ -278,7 +283,6 @@ inoremap <C-l> <Right>
 inoremap <C-j> <C-o>gj
 
 " Extremes
-
 nnoremap H ^
 nnoremap L $
 
@@ -364,7 +368,7 @@ nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Dropbox/papiery/defaults.
 if has("linux")
 	nnoremap <expr> <leader>oo ":!".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr><cr>"
 else
-	nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")."& ".expand("%:p:r").".pdf<cr>"
+	nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
 endif
 
 " }}}
