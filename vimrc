@@ -45,7 +45,7 @@ if has('linux')
 	language time pl_PL.utf8
 	let $PDFVIEWER = "zathura"
 endif
-" although I could just make an else statement, this is safer:
+
 if has('win32') || has('win64') 
 	language time pl_PL
 	let $PDFVIEWER = "SumatraPDF"
@@ -87,9 +87,9 @@ Plugin 'jsit/toast.vim'
 Plugin 'davidhalter/jedi-vim'
 Plugin 'rhysd/vim-grammarous'
 Plugin 'dense-analysis/ale'
+Plugin 'lifepillar/vim-cheat40'
 
 if has('linux')
-    "Plugin 'chriskempson/base16-vim'
 	Plugin 'noahfrederick/vim-noctu'
 else
 	Plugin 'morhetz/gruvbox'
@@ -167,12 +167,10 @@ nnoremap <leader>B :Buffers<cr>
 nnoremap <silent><leader>r :set relativenumber!<cr>:set number!<cr>
 nnoremap <leader>cl2 :set conceallevel=2<cr>
 nnoremap <leader>cl0 :set conceallevel=0<cr>
-nnoremap <silent><leader>sc :set scrolloff=999<cr>
-nnoremap <silent><leader>nsc :let &scrolloff=winheight(win_getid())/3<cr>
 
 " Change Vim working directory to the dir of the currently open file
 nnoremap <leader>cd :cd %:p:h 
-nnoremap <leader>ma :! maim -s -u -d 1 img/
+nnoremap <leader>ma :! maim -s -u -d 1 fig/
 
 inoremap <leader>w <esc>:w<cr>a
 
@@ -211,6 +209,7 @@ let g:fzf_colors =
 			\ 'marker':  ['fg', 'Keyword'],
 			\ 'spinner': ['fg', 'Label'],
 			\ 'header':  ['fg', 'Comment'] }
+
 if has('win32') || has('win64')
 	let g:fzf_preview_window = ''
 endif
@@ -274,6 +273,8 @@ augroup END
 " }}}
 " }}}
 " Mappings {{{
+" Disable Ex mode
+nnoremap Q <Nop>
 " Cursor movement
 nnoremap j gj
 nnoremap k gk
@@ -301,11 +302,8 @@ function! CallJedi()
     let g:jedi#max_doc_height = 50
     nnoremap <silent> <buffer> <localleader>r :call jedi#rename()<cr>
     nnoremap <silent> <buffer> K :call jedi#show_documentation()<cr>
-    call jedi#configure_call_signatures()
 endfunction
-
-let g:jedi#show_call_signatures = "1"
-let g:jedi#show_call_signatures_delay = "1000"
+let g:jedi#show_call_signatures = 0
 " }}}
 " Python {{{
 " PEP 8
@@ -409,7 +407,6 @@ autocmd FileType markdown call NoIndent()
 autocmd BufEnter * set fo-=n fo-=r fo-=q
 " }}}
 " LaTeX (vimtex) {{{
-" General configuration {{{
 "if empty(v:servername) && exists('*remote_startserver')
 "	call remote_startserver('VIM')
 "endif
@@ -419,10 +416,16 @@ let g:vimtex_motion_matchparen = 0
 let g:vimtex_indent_enabled = 0
 let g:vimtex_matchparen_enabled = 0
 let g:vimtex_fold_enabled = 1
+let g:vimtex_view_forward_search_on_start = 0
+let g:ale_linters = {
+\   'tex': [],
+\}
 
 if has('linux')
 	let g:vimtex_view_method = 'zathura'
 endif
+
+au BufNewFile,BufRead *.tikz set filetype=tex
 
 let g:vimtex_compiler_latexmk = {
 		\ 'build_dir' : 'build',
@@ -431,16 +434,17 @@ let g:vimtex_compiler_latexmk = {
 		\ 'executable' : 'latexmk',
 		\ 'hooks' : [],
 		\ 'options' : [
+		\   '-pdf',
 		\   '-verbose',
 		\   '-file-line-error',
 		\   '-synctex=1',
 		\   '-interaction=nonstopmode',
+		\		'-shell-escape',
 		\ ],
 		\}
 
 let g:tex_conceal='abdmg'
 let g:vimtex_quickfix_open_on_warning = 0
-" }}}
 " }}}
 " Journal {{{
 " Creates a new .md file with a date on top and appends time of every new entry
