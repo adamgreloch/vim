@@ -11,5 +11,6 @@ Session.vim
 tags
 
 /tmp/
-/bundle/
+/plugged/
+/autoload/
 

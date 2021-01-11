@@ -1,6 +1,5 @@
 " Setup {{{
 set nocompatible
-filetype plugin on
 autocmd!
 
 syntax on
@@ -29,7 +28,7 @@ set hlsearch
 set incsearch
 nnoremap <silent> <cr> :noh<CR><CR>
 
-if empty(glob('~/.vim/tmp'))
+if empty(glob(expand("$HOME") . "/.vim/tmp"))
 	silent !mkdir -p ~/.vim/tmp
 endif
 
@@ -56,64 +55,74 @@ if has('win32') || has('win64')
 	nnoremap <silent> <F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen_64.dll", "ToggleFullScreen", 0)<CR>
 endif
 " }}}
-" Vundle config {{{
+" vim-plug config {{{
 
-" Vundle bootstrap
-" TODO make it work for Windows 
-if !filereadable($HOME . '/.vim/bundle/Vundle.vim/.git/config') && confirm("Clone Vundle?","Y\nn") == 1
-	exec '!git clone https://github.com/gmarik/Vundle.vim ~/.vim/bundle/Vundle.vim/'
+" vim-plug automatic installation
+
+if empty(glob(expand("$HOME") . "/.vim/autoload/plug.vim"))
+	if has('win32') || has('win64')
+		iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
+    ni $HOME/vimfiles/autoload/plug.vim -Force
+	else
+		silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+			\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+		autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+	endif
 endif
 
-" sets the runtime path to include Vundle and initializes it
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+call plug#begin('~/.vim/plugged')
 
-Plugin 'VundleVim/Vundle.vim'
+Plug 'VundleVim/Vundle.vim'
 
-Plugin 'junegunn/fzf'
-Plugin 'junegunn/fzf.vim'
-Plugin 'preservim/nerdtree'
-Plugin 'reedes/vim-pencil'
-Plugin 'tpope/vim-fugitive'
-Plugin 'junegunn/goyo.vim'
-Plugin 'lervag/vimtex'
-Plugin 'vim-pandoc/vim-pandoc'
-Plugin 'junegunn/limelight.vim'
-Plugin 'easymotion/vim-easymotion'
-Plugin 'tpope/vim-dispatch'
-Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
-Plugin 'freitass/todo.txt-vim'
-Plugin 'jamessan/vim-gnupg'
-Plugin 'plasticboy/vim-markdown'
-Plugin 'jsit/toast.vim'
-Plugin 'davidhalter/jedi-vim'
-Plugin 'rhysd/vim-grammarous'
-Plugin 'dense-analysis/ale'
-Plugin 'lifepillar/vim-cheat40'
-Plugin 'junegunn/vim-peekaboo'
-Plugin 'mbbill/undotree'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'preservim/nerdtree'
+Plug 'reedes/vim-pencil'
+Plug 'tpope/vim-fugitive'
+Plug 'junegunn/goyo.vim'
+Plug 'lervag/vimtex'
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'junegunn/limelight.vim'
+Plug 'easymotion/vim-easymotion'
+Plug 'tpope/vim-dispatch'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'freitass/todo.txt-vim'
+Plug 'jamessan/vim-gnupg'
+Plug 'plasticboy/vim-markdown'
+Plug 'jsit/toast.vim'
+Plug 'davidhalter/jedi-vim'
+Plug 'rhysd/vim-grammarous'
+Plug 'dense-analysis/ale'
+Plug 'lifepillar/vim-cheat40'
+Plug 'junegunn/vim-peekaboo'
+Plug 'mbbill/undotree'
+Plug 'gruvbox-community/gruvbox'
 
 if has('linux')
-	Plugin 'noahfrederick/vim-noctu'
+	Plug 'noahfrederick/vim-noctu'
 else
-	Plugin 'morhetz/gruvbox'
-	Plugin 'derekmcloughlin/gvimfullscreen_win32'
+	Plug 'morhetz/gruvbox'
+	Plug 'derekmcloughlin/gvimfullscreen_win32'
 endif
 
-call vundle#end()
+call plug#end()
 filetype plugin indent on
 
 " }}}
 " GUI tweaks {{{
 
 set laststatus=2
-set statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)
+set statusline=
+set statusline+=%t\ 
+set statusline+=%h%w%m%r\ 
+set statusline+=%=%(%l,%c%V\ %=\ %P%) 
+
+" set statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)
 
 " Set theme
 if has('linux')
 	colorscheme noctu
-		hi statusline ctermfg=16 ctermbg=12
 else
 	colorscheme gruvbox
 	set background=dark
@@ -123,7 +132,7 @@ endif
 " into a function and invoke again on s:goyo_leave()
 function! CustomHi()
 	hi SpellBad cterm=bold ctermfg=167
-	hi VertSplit ctermfg=2
+	hi VertSplit ctermfg=2 
 	hi CursorLine cterm=none ctermbg=234
 	hi CursorLineNr cterm=bold ctermbg=234
 	hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
