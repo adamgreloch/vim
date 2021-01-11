@@ -21,10 +21,12 @@ set spellcapcheck=
 set relativenumber
 set cursorline
 set number
+set updatetime=50
 
 " Search
-set ic
-set hls
+set ignorecase
+set hlsearch
+set incsearch
 nnoremap <silent> <cr> :noh<CR><CR>
 
 if empty(glob('~/.vim/tmp'))
@@ -34,6 +36,7 @@ endif
 set backup
 set backupdir=~/.vim/tmp//
 set directory=~/.vim/tmp//
+set undofile
 set undodir=~/.vim/tmp//
 
 " }}}
@@ -88,6 +91,8 @@ Plugin 'davidhalter/jedi-vim'
 Plugin 'rhysd/vim-grammarous'
 Plugin 'dense-analysis/ale'
 Plugin 'lifepillar/vim-cheat40'
+Plugin 'junegunn/vim-peekaboo'
+Plugin 'mbbill/undotree'
 
 if has('linux')
 	Plugin 'noahfrederick/vim-noctu'
@@ -108,6 +113,7 @@ set statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)
 " Set theme
 if has('linux')
 	colorscheme noctu
+		hi statusline ctermfg=16 ctermbg=12
 else
 	colorscheme gruvbox
 	set background=dark
@@ -120,6 +126,7 @@ function! CustomHi()
 	hi VertSplit ctermfg=2
 	hi CursorLine cterm=none ctermbg=234
 	hi CursorLineNr cterm=bold ctermbg=234
+	hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
 endfunction
 
 call CustomHi()
@@ -145,6 +152,7 @@ set langmenu=en_US
 let $LANG = 'en_US'
 source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
+set guicursor+=a:blinkon0
 
 if has('win32') || has('win64')
 	set guifont=Meslo_LG_S:h11
@@ -154,6 +162,7 @@ endif
 " }}}
 " Leaders {{{
 nnoremap <leader>n :NERDTree %:h<cr>
+nnoremap <leader>u :UndotreeShow<cr>
 nnoremap <leader>w :w<cr>
 nnoremap <leader>e :w!<cr>:e %:h<cr>
 nnoremap <leader>ov :e ~/.vim/vimrc<cr>
@@ -200,7 +209,7 @@ let g:fzf_colors =
 			\ 'bg':      ['bg', 'Normal'],
 			\ 'hl':      ['fg', 'Comment'],
 			\ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-			\ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+			\ 'bg+':     ['bg', 'User1'],
 			\ 'hl+':     ['fg', 'Statement'],
 			\ 'info':    ['fg', 'PreProc'],
 			\ 'border':  ['fg', 'Ignore'],
@@ -241,7 +250,6 @@ function! s:goyo_enter()
 endfunction
 
 function! s:goyo_leave()
-	set guicursor-=a:blinkon0
 	call CustomHi()
 endfunction
 
@@ -379,7 +387,7 @@ function! Prose()
 	call pencil#init({'wrap': 'hard', 'textwidth': '79'})
 	nnoremap <buffer> k gk
 	nnoremap <buffer> j gj
-	setlocal statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %{wordcount().words}\ w\ %=\ %P%)
+	setlocal statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %{wordcount().words}w\ %=\ %P%)
 	set spelllang=en,pl
 endfunction
 
