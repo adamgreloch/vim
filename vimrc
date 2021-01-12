@@ -4,6 +4,8 @@ autocmd!
 
 syntax on
 
+" TODO: make sure this rtp makes sense
+set runtimepath=$HOME/.vim,$XDG_CONFIG_HOME/vim,$VIM,$VIMRUNTIME,$XDG_CONFIG_HOME/vim/after
 set encoding=utf8
 set mouse=a
 set backspace=2 			" make backspace work like most other programs
@@ -48,7 +50,7 @@ if has('linux')
 	let $PDFVIEWER = "zathura"
 endif
 
-if has('win32') || has('win64') 
+if has('win32')
 	language time pl_PL
 	let $PDFVIEWER = "SumatraPDF"
 	let &pythonthreedll = 'C:\python37\python37.dll'
@@ -60,9 +62,9 @@ endif
 " vim-plug automatic installation
 
 if empty(glob(expand("$HOME") . "/.vim/autoload/plug.vim"))
-	if has('win32') || has('win64')
+	if has('win32')
 		iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
-    ni $HOME/vimfiles/autoload/plug.vim -Force
+    ni $HOME/.vim/autoload/plug.vim -Force
 	else
 		silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
 			\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -71,8 +73,6 @@ if empty(glob(expand("$HOME") . "/.vim/autoload/plug.vim"))
 endif
 
 call plug#begin('~/.vim/plugged')
-
-Plug 'VundleVim/Vundle.vim'
 
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
@@ -97,11 +97,11 @@ Plug 'dense-analysis/ale'
 Plug 'lifepillar/vim-cheat40'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
-Plug 'gruvbox-community/gruvbox'
 
 if has('linux')
 	Plug 'noahfrederick/vim-noctu'
 else
+	Plug 'gruvbox-community/gruvbox'
 	Plug 'morhetz/gruvbox'
 	Plug 'derekmcloughlin/gvimfullscreen_win32'
 endif
@@ -163,8 +163,8 @@ source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 set guicursor+=a:blinkon0
 
-if has('win32') || has('win64')
-	set guifont=Meslo_LG_S:h11
+if has('win32')
+	set guifont=Meslo_LG_S:h12
 else
 	set guifont=Monospace\ 12
 endif
@@ -228,7 +228,7 @@ let g:fzf_colors =
 			\ 'spinner': ['fg', 'Label'],
 			\ 'header':  ['fg', 'Comment'] }
 
-if has('win32') || has('win64')
+if has('win32')
 	let g:fzf_preview_window = ''
 endif
 " }}}
