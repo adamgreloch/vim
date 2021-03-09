@@ -163,8 +163,11 @@ source $VIMRUNTIME/delmenu.vim
 source $VIMRUNTIME/menu.vim
 set guicursor+=a:blinkon0
 
+if has("gui_running")
+	set lines=35 columns=100
+endif
 if has('win32')
-	set guifont=Meslo_LG_S:h12
+	set guifont=Meslo_LG_S:h14
 else
 	set guifont=Monospace\ 12
 endif
