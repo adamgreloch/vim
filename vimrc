@@ -4,7 +4,6 @@ autocmd!
 
 syntax on
 
-" TODO: make sure this rtp makes sense
 set runtimepath=$HOME/.vim,$XDG_CONFIG_HOME/vim,$VIM,$VIMRUNTIME,$XDG_CONFIG_HOME/vim/after
 set encoding=utf8
 set mouse=a
@@ -27,8 +26,13 @@ set updatetime=50
 
 " Search
 set ignorecase
-set hlsearch
 set incsearch
+
+augroup vimrc-incsearch-highlight
+	autocmd!
+	autocmd CmdlineEnter /,\? :set hlsearch
+	autocmd CmdlineLeave /,\? :set nohlsearch
+augroup END
 nnoremap <silent> <cr> :noh<CR><CR>
 
 if empty(glob(expand("$HOME") . "/.vim/tmp"))
@@ -100,12 +104,13 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'vimwiki/vimwiki'
 
-if has('linux')
-	Plug 'noahfrederick/vim-noctu'
-else
+if has('win32')
 	Plug 'gruvbox-community/gruvbox'
 	Plug 'morhetz/gruvbox'
 	Plug 'derekmcloughlin/gvimfullscreen_win32'
+else
+	" for Linux/macOS
+	Plug 'noahfrederick/vim-noctu'
 endif
 
 call plug#end()
@@ -135,14 +140,16 @@ endif
 " into a function and invoke again on s:goyo_leave()
 function! CustomHi()
 	hi SpellBad cterm=bold ctermfg=167
-	hi VertSplit ctermfg=2
+	hi VertSplit ctermfg=9 
 	hi CursorLine cterm=none ctermbg=234
 	hi CursorLineNr cterm=bold ctermbg=234
+	hi Statusline cterm=bold ctermfg=16 ctermbg=9
 	hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
 endfunction
 
 if has('linux')
 	call CustomHi()
+	set nocursorline
 endif
 
 " Disable bells
@@ -393,10 +400,7 @@ function! Prose()
 	nnoremap <buffer> k gk
 	nnoremap <buffer> j gj
 	setlocal statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %{wordcount().words}w\ %=\ %P%)
-	set spelllang=en,pl
 endfunction
-
-" Maybe a better way would be to use a modeline i.e. # vim:spelllang=en/pl?
 
 autocmd FileType markdown,mkd,txt  call Prose()
 autocmd FileType tex 							 call pencil#init({'wrap': 'soft'})
@@ -404,16 +408,17 @@ autocmd FileType tex 							 call pencil#init({'wrap': 'soft'})
 " }}}
 " Markdown {{{
 let g:vim_markdown_folding_disabled = 1
+
+" no more auto bullets and indentation
 function! NoIndent()
 	setlocal noautoindent
 	setlocal nocindent
 	set indentexpr=""
 endfunction
 
-" no more auto bullets
 " https://vi.stackexchange.com/questions/12000/prevent-neovim-from-breaking-one-markdown-bullet-point-into-multiple-ones
-set fo-=q
 
+let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 
 autocmd FileType markdown call NoIndent()
