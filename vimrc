@@ -15,6 +15,7 @@ set guioptions=cgt
 set smartindent
 set numberwidth=4
 set laststatus=1
+set ruler
 set diffopt+=vertical	" vertical diff (for fugitive)
 set splitbelow 				" split everything below (for term)
 set foldmethod=marker
@@ -97,6 +98,7 @@ Plug 'dense-analysis/ale'
 Plug 'lifepillar/vim-cheat40'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
+Plug 'vimwiki/vimwiki'
 
 if has('linux')
 	Plug 'noahfrederick/vim-noctu'
@@ -112,11 +114,11 @@ filetype plugin indent on
 " }}}
 " GUI tweaks {{{
 
-set laststatus=2
 set statusline=
 set statusline+=%t\ 
 set statusline+=%h%w%m%r\ 
 set statusline+=%=%(%l,%c%V\ %=\ %P%) 
+set laststatus=2
 
 " set statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)
 
@@ -124,6 +126,7 @@ set statusline+=%=%(%l,%c%V\ %=\ %P%)
 if has('linux')
 	colorscheme noctu
 else
+	let g:gruvbox_italic = 0
 	colorscheme gruvbox
 	set background=dark
 endif
@@ -132,13 +135,15 @@ endif
 " into a function and invoke again on s:goyo_leave()
 function! CustomHi()
 	hi SpellBad cterm=bold ctermfg=167
-	hi VertSplit ctermfg=2 
+	hi VertSplit ctermfg=2
 	hi CursorLine cterm=none ctermbg=234
 	hi CursorLineNr cterm=bold ctermbg=234
 	hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
 endfunction
 
-call CustomHi()
+if has('linux')
+	call CustomHi()
+endif
 
 " Disable bells
 set noerrorbells visualbell t_vb=
@@ -167,7 +172,8 @@ if has("gui_running")
 	set lines=35 columns=100
 endif
 if has('win32')
-	set guifont=Meslo_LG_S:h14
+	"set guifont=Meslo_LG_S:h14
+	set guifont=Fira_Code_Medium:h14
 else
 	set guifont=Monospace\ 12
 endif
@@ -180,7 +186,7 @@ nnoremap <leader>e :w!<cr>:e %:h<cr>
 nnoremap <leader>ov :e ~/.vim/vimrc<cr>
 nnoremap <leader>P "+p
 nnoremap <leader>Y "+y
-nnoremap <leader>g :Goyo<cr>
+nnoremap <silent><leader>g :Goyo<cr>
 nnoremap <leader>q :q<cr>
 nnoremap <leader>b <C-^>
 nnoremap <leader>G :Git<cr>
@@ -195,7 +201,7 @@ nnoremap <leader>ma :! maim -s -u -d 1 fig/
 
 inoremap <leader>w <esc>:w<cr>a
 
-map  <leader>s <Plug>(easymotion-bd-w)
+map <leader>s <Plug>(easymotion-bd-w)
 
 nnoremap <leader>ep :e ~/Dropbox/papiery/
 
@@ -215,21 +221,6 @@ nnoremap <silent><leader>op :Files ~/Dropbox/papiery/<CR>
 nnoremap <silent><leader>od :Files ~/Dropbox/<CR>
 
 let g:fzf_layout = { 'down': '~30%' }
-
-let g:fzf_colors =
-			\ { 'fg':      ['fg', 'Normal'],
-			\ 'bg':      ['bg', 'Normal'],
-			\ 'hl':      ['fg', 'Comment'],
-			\ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
-			\ 'bg+':     ['bg', 'User1'],
-			\ 'hl+':     ['fg', 'Statement'],
-			\ 'info':    ['fg', 'PreProc'],
-			\ 'border':  ['fg', 'Ignore'],
-			\ 'prompt':  ['fg', 'Conditional'],
-			\ 'pointer': ['fg', 'Exception'],
-			\ 'marker':  ['fg', 'Keyword'],
-			\ 'spinner': ['fg', 'Label'],
-			\ 'header':  ['fg', 'Comment'] }
 
 if has('win32')
 	let g:fzf_preview_window = ''
@@ -259,10 +250,12 @@ autocmd BufNewFile,BufRead *.[Dd]one.txt set filetype=todo
 " Goyo settings
 function! s:goyo_enter()
 	set guicursor+=a:blinkon0
+	set noshowmode
 endfunction
 
 function! s:goyo_leave()
 	call CustomHi()
+	set showmode
 endfunction
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
@@ -480,6 +473,14 @@ autocmd BufNewFile ~/Dropbox/journal/* :$pu=strftime('%H:%M ') | :normal GA
 autocmd BufNewFile ~/Dropbox/journal/* setlocal tw=79
 autocmd BufRead ~/Dropbox/journal/* setlocal tw=79
 autocmd BufRead ~/Dropbox/journal/* $pu=strftime('%H:%M ') | :normal GA
+
+" }}}
+" vimwiki {{{
+let g:vimwiki_list = [{'path':'$HOME/Dropbox/wszystko', 'path_html':'$HOME/Dropbox/wszystko/export/html/', 'auto_toc': 1}]
+
+let g:vimwiki_hl_headers = 1
+let g:vimwiki_auto_header = 1
+let g:vimwiki_toc_header = 'TOC'
 
 " }}}
 " }}}
