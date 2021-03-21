@@ -473,10 +473,11 @@ endfunction
 
 nnoremap <expr> <leader>oj JournalOpen()
 
-autocmd BufNewFile ~/Dropbox/journal/* :$pu!=strftime('%A, %d.%m.%y')
-autocmd BufNewFile ~/Dropbox/journal/* :$pu=strftime('%H:%M ') | :normal GA
+autocmd BufNewFile ~/Dropbox/journal/* $pu!=strftime('%A, %d.%m.%y')
+autocmd BufNewFile ~/Dropbox/journal/* $pu=strftime('%H:%M ') | :normal GA
 autocmd BufNewFile ~/Dropbox/journal/* setlocal tw=79
 autocmd BufRead ~/Dropbox/journal/* setlocal tw=79
+autocmd BufRead ~/Dropbox/journal/* call append(line('$'), '')
 autocmd BufRead ~/Dropbox/journal/* $pu=strftime('%H:%M ') | :normal GA
 
 " }}}
