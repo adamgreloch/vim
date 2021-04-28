@@ -20,8 +20,8 @@ set splitbelow 				" split everything below (for term)
 set foldmethod=marker
 set spellcapcheck=
 set relativenumber
-set cursorline
 set number
+set cursorline
 set updatetime=50
 
 " Search
@@ -176,7 +176,7 @@ source $VIMRUNTIME/menu.vim
 set guicursor+=a:blinkon0
 
 if has("gui_running")
-	set lines=35 columns=100
+	set lines=30 columns=80
 endif
 if has('win32')
 	"set guifont=Meslo_LG_S:h14
@@ -400,10 +400,14 @@ function! Prose()
 	nnoremap <buffer> k gk
 	nnoremap <buffer> j gj
 	setlocal statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %{wordcount().words}w\ %=\ %P%)
+	set spelllang=pl
+	set nospell
 endfunction
 
-autocmd FileType markdown,mkd,txt  call Prose()
-autocmd FileType tex 							 call pencil#init({'wrap': 'soft'})
+"autocmd FileType markdown,md,txt  call Prose()
+autocmd BufEnter *.md							call Prose()
+autocmd BufEnter *.txt						call Prose()
+autocmd FileType tex 						  call pencil#init({'wrap': 'soft'})
 
 " }}}
 " Markdown {{{
@@ -432,8 +436,8 @@ autocmd BufEnter * set fo-=n fo-=r fo-=q
 let g:tex_flavor = "latex"
 let g:vimtex_motion_matchparen = 0
 let g:vimtex_indent_enabled = 0
-let g:vimtex_matchparen_enabled = 0
 let g:vimtex_fold_enabled = 1
+let g:vimtex_matchparen_enabled = 0
 let g:vimtex_view_forward_search_on_start = 0
 let g:ale_linters = {
 \   'tex': [],
@@ -474,11 +478,11 @@ endfunction
 nnoremap <expr> <leader>oj JournalOpen()
 
 autocmd BufNewFile ~/Dropbox/journal/* $pu!=strftime('%A, %d.%m.%y')
-autocmd BufNewFile ~/Dropbox/journal/* $pu=strftime('%H:%M ') | :normal GA
-autocmd BufNewFile ~/Dropbox/journal/* setlocal tw=79
-autocmd BufRead ~/Dropbox/journal/* setlocal tw=79
-autocmd BufRead ~/Dropbox/journal/* call append(line('$'), '')
-autocmd BufRead ~/Dropbox/journal/* $pu=strftime('%H:%M ') | :normal GA
+"autocmd BufNewFile ~/Dropbox/journal/* $pu=strftime('%H:%M ') | :normal GA
+"autocmd BufNewFile ~/Dropbox/journal/* setlocal tw=79
+autocmd BufWinEnter ~/Dropbox/journal/* setlocal tw=79
+autocmd BufWinEnter ~/Dropbox/journal/* call append(line('$'), '')
+autocmd BufWinEnter ~/Dropbox/journal/* $pu!=strftime('%H:%M ') | :normal GA
 
 " }}}
 " vimwiki {{{
@@ -487,6 +491,8 @@ let g:vimwiki_list = [{'path':'$HOME/Dropbox/wszystko', 'path_html':'$HOME/Dropb
 let g:vimwiki_hl_headers = 1
 let g:vimwiki_auto_header = 1
 let g:vimwiki_toc_header = 'TOC'
+
+let g:vimwiki_global_ext = 0
 
 " }}}
 " }}}
