@@ -143,7 +143,7 @@ function! CustomHi()
 	hi VertSplit ctermfg=9 
 	hi CursorLine cterm=none ctermbg=234
 	hi CursorLineNr cterm=bold ctermbg=234
-	hi Statusline cterm=bold ctermfg=16 ctermbg=9
+	hi Statusline cterm=bold ctermfg=16 ctermbg=8
 	hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
 endfunction
 
@@ -491,7 +491,6 @@ let g:vimwiki_list = [{'path':'$HOME/Dropbox/wszystko', 'path_html':'$HOME/Dropb
 let g:vimwiki_hl_headers = 1
 let g:vimwiki_auto_header = 1
 let g:vimwiki_toc_header = 'TOC'
-
 let g:vimwiki_global_ext = 0
 
 " }}}
