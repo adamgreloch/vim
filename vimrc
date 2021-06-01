@@ -23,6 +23,12 @@ set relativenumber
 set number
 set cursorline
 set updatetime=50
+set timeoutlen=250
+
+" Tabs to spaces
+set tabstop=2
+set shiftwidth=2
+set expandtab
 
 " Search
 set ignorecase
@@ -210,7 +216,7 @@ inoremap <leader>w <esc>:w<cr>a
 
 map <leader>s <Plug>(easymotion-bd-w)
 
-nnoremap <leader>ep :e ~/Dropbox/papiery/
+nnoremap <leader>ep :e ~/Pudlo/papiery/
 
 " limelight
 if has('linux')
@@ -224,8 +230,8 @@ endif
 nnoremap <silent><leader>o :Files<CR>
 nnoremap <silent><leader>oh :Files ~<CR>
 nnoremap <silent><leader>og :Files ~/git/<CR>
-nnoremap <silent><leader>op :Files ~/Dropbox/papiery/<CR>
-nnoremap <silent><leader>od :Files ~/Dropbox/<CR>
+nnoremap <silent><leader>op :Files ~/Pudlo/papiery/<CR>
+nnoremap <silent><leader>od :Files ~/Pudlo/<CR>
 
 let g:fzf_layout = { 'down': '~30%' }
 
@@ -313,6 +319,9 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+" Brackets
+inoremap {<CR> {<CR>}<ESC>O
+inoremap {;<CR> {<CR>};<ESC>O
 " }}}
 " Coding {{{
 " vim-jedi {{{
@@ -379,9 +388,9 @@ endfor
 let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
 let g:pandoc#command#latex_engine = "pdflatex"
 "let g:pandoc#command#autoexec_on_writes = '1'
-"let g:pandoc#command#autoexec_command = ':Pandoc pdf --template="~/Dropbox/papiery/defaults.latex"'
+"let g:pandoc#command#autoexec_command = ':Pandoc pdf --template="~/Pudlo/papiery/defaults.latex"'
 
-nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Dropbox/papiery/defaults.latex"<cr>
+nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Pudlo/papiery/defaults.latex"<cr>
 
 if has("linux")
 	nnoremap <expr> <leader>oo ":!".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr><cr>"
@@ -472,21 +481,21 @@ let g:vimtex_quickfix_open_on_warning = 0
 " Creates a new .md file with a date on top and appends time of every new entry
 " just like org-journal
 function! JournalOpen()
-	return ':e ~/Dropbox/journal/'.strftime('%Y%m%d').'.txt.gpg'
+	return ':e ~/Pudlo/journal/'.strftime('%Y%m%d').'.txt.gpg'
 endfunction
 
 nnoremap <expr> <leader>oj JournalOpen()
 
-autocmd BufNewFile ~/Dropbox/journal/* $pu!=strftime('%A, %d.%m.%y')
-"autocmd BufNewFile ~/Dropbox/journal/* $pu=strftime('%H:%M ') | :normal GA
-"autocmd BufNewFile ~/Dropbox/journal/* setlocal tw=79
-autocmd BufWinEnter ~/Dropbox/journal/* setlocal tw=79
-autocmd BufWinEnter ~/Dropbox/journal/* call append(line('$'), '')
-autocmd BufWinEnter ~/Dropbox/journal/* $pu!=strftime('%H:%M ') | :normal GA
+autocmd BufNewFile ~/Pudlo/journal/* $pu!=strftime('%A, %d.%m.%y')
+"autocmd BufNewFile ~/Pudlo/journal/* $pu=strftime('%H:%M ') | :normal GA
+"autocmd BufNewFile ~/Pudlo/journal/* setlocal tw=79
+autocmd BufWinEnter ~/Pudlo/journal/* setlocal tw=79
+autocmd BufWinEnter ~/Pudlo/journal/* call append(line('$'), '')
+autocmd BufWinEnter ~/Pudlo/journal/* $pu!=strftime('%H:%M ') | :normal GA
 
 " }}}
 " vimwiki {{{
-let g:vimwiki_list = [{'path':'$HOME/Dropbox/wszystko', 'path_html':'$HOME/Dropbox/wszystko/export/html/', 'auto_toc': 1}]
+let g:vimwiki_list = [{'path':'$HOME/Pudlo/wszystko', 'path_html':'$HOME/Pudlo/wszystko/export/html/', 'auto_toc': 1}]
 
 let g:vimwiki_hl_headers = 1
 let g:vimwiki_auto_header = 1
