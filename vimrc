@@ -26,8 +26,8 @@ set updatetime=50
 set timeoutlen=250
 
 " Tabs to spaces
-set tabstop=2
-set shiftwidth=2
+set tabstop=4
+set shiftwidth=4
 set expandtab
 
 " Search
@@ -334,9 +334,16 @@ function! CallJedi()
 endfunction
 let g:jedi#show_call_signatures = 0
 " }}}
+" C {{{
+function! ForC()
+    nnoremap <F9> :w<CR>:exec '!gcc -std=c11' shellescape(@%, 1) '&& ./a.out'<CR>
+endfunction
+
+au BufNewFile,BufRead *.c :call ForC()
+" }}}
 " Python {{{
-" PEP 8
-function! PepStandards()
+function! ForPython()
+    " PEP 8
 	set tabstop=4
 	set softtabstop=4
 	set shiftwidth=4
@@ -344,34 +351,33 @@ function! PepStandards()
 	set expandtab
 	set autoindent
 	set fileformat=unix
+    autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
+    autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 endfunction
 
-au BufNewFile,BufRead *.py :call PepStandards()
+au BufNewFile,BufRead *.py :call ForPython()
 au BufNewFile,BufRead *.py :call CallJedi()
 
 " Run current .py
-autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
-autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 
 " }}}
 " Java {{{
+function! ForJava()
+    nnoremap <F9> :Make<CR>
+    nnoremap <silent><F10> :terminal java %:r $SHELL<CR>
+    set errorformat=%A%f:%l:\ %m,%-Z%p^,%-C%.%#
+endfunction
+
 autocmd FileType java set makeprg=javac\ %
-set errorformat=%A%f:%l:\ %m,%-Z%p^,%-C%.%#
-nnoremap <F9> :Make<CR>
-nnoremap <silent><F10> :terminal java %:r $SHELL<CR>
+autocmd FileType java call ForJava()
 ":!java %:r<CR>
 ":copen<Return>
 " }}}
 " Misc {{{
-" On pressing tab, insert 2 spaces
-set tabstop=2
-set shiftwidth=2
-
 " UltiSnips configuration
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-
 " }}}
 " }}}
 " Writing text {{{
