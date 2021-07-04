@@ -7,8 +7,8 @@ syntax on
 set runtimepath=$HOME/.vim,$XDG_CONFIG_HOME/vim,$VIM,$VIMRUNTIME,$XDG_CONFIG_HOME/vim/after
 set encoding=utf8
 set mouse=a
-set backspace=2 			" make backspace work like most other programs
-set wildmenu 					" tab completion
+set backspace=2         " make backspace work like most other programs
+set wildmenu 			" tab completion
 set cmdheight=1
 set guioptions=cgt
 set smartindent
@@ -16,14 +16,13 @@ set numberwidth=4
 set laststatus=1
 set ruler
 set diffopt+=vertical	" vertical diff (for fugitive)
-set splitbelow 				" split everything below (for term)
+set splitbelow 		    " split everything below (for term)
 set foldmethod=marker
 set spellcapcheck=
 set relativenumber
 set number
 set cursorline
 set updatetime=50
-set timeoutlen=250
 
 " Tabs to spaces
 set tabstop=4
@@ -151,6 +150,9 @@ function! CustomHi()
 	hi CursorLineNr cterm=bold ctermbg=234
 	hi Statusline cterm=bold ctermfg=16 ctermbg=8
 	hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
+    " Highlight characters exceeding 80 per line
+    hi ColorColumn ctermbg=4
+    call matchadd('ColorColumn', '\%81v', 100)
 endfunction
 
 if has('linux')
@@ -262,11 +264,15 @@ autocmd BufNewFile,BufRead *.[Dd]one.txt set filetype=todo
 
 " Goyo settings
 function! s:goyo_enter()
-	set guicursor+=a:blinkon0
-	set noshowmode
+    silent !tmux set status off
+    silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+    set guicursor+=a:blinkon0
+    set noshowmode
 endfunction
 
 function! s:goyo_leave()
+    silent !tmux set status on
+    silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
 	call CustomHi()
 	set showmode
 endfunction
@@ -420,9 +426,8 @@ function! Prose()
 endfunction
 
 "autocmd FileType markdown,md,txt  call Prose()
-autocmd BufEnter *.md							call Prose()
-autocmd BufEnter *.txt						call Prose()
-autocmd FileType tex 						  call pencil#init({'wrap': 'soft'})
+autocmd BufEnter *.md,*.txt                 call Prose()
+autocmd FileType tex 		                call pencil#init({'wrap': 'soft'})
 
 " }}}
 " Markdown {{{
