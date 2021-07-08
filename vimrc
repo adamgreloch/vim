@@ -23,6 +23,7 @@ set relativenumber
 set number
 set cursorline
 set updatetime=50
+set fileformat=unix
 
 " Tabs to spaces
 set tabstop=4
@@ -384,6 +385,7 @@ autocmd FileType java call ForJava()
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+
 " }}}
 " }}}
 " Writing text {{{
@@ -418,6 +420,7 @@ let g:pencil#conceallevel = 0
 
 function! Prose()
 	call pencil#init({'wrap': 'hard', 'textwidth': '79'})
+    set nowrap
 	nnoremap <buffer> k gk
 	nnoremap <buffer> j gj
 	setlocal statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %{wordcount().words}w\ %=\ %P%)
@@ -498,9 +501,7 @@ endfunction
 nnoremap <expr> <leader>oj JournalOpen()
 
 autocmd BufNewFile ~/Pudlo/journal/* $pu!=strftime('%A, %d.%m.%y')
-"autocmd BufNewFile ~/Pudlo/journal/* $pu=strftime('%H:%M ') | :normal GA
-"autocmd BufNewFile ~/Pudlo/journal/* setlocal tw=79
-autocmd BufWinEnter ~/Pudlo/journal/* setlocal tw=79
+autocmd BufWinEnter ~/Pudlo/journal/* setlocal tw=79 nowrap
 autocmd BufWinEnter ~/Pudlo/journal/* call append(line('$'), '')
 autocmd BufWinEnter ~/Pudlo/journal/* $pu!=strftime('%H:%M ') | :normal GA
 
@@ -512,6 +513,8 @@ let g:vimwiki_hl_headers = 1
 let g:vimwiki_auto_header = 1
 let g:vimwiki_toc_header = 'TOC'
 let g:vimwiki_global_ext = 0
+
+autocmd BufEnter *.wiki set textwidth=79 nowrap
 
 " }}}
 " }}}
