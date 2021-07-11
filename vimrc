@@ -65,7 +65,6 @@ if has('win32')
 	language time pl_PL
 	let $PDFVIEWER = "SumatraPDF"
 	let &pythonthreedll = 'C:\python37\python37.dll'
-	nnoremap <silent> <F11> :call libcallnr(expand("$HOME") . "/.vim/bundle/gvimfullscreen_win32/gvimfullscreen_64.dll", "ToggleFullScreen", 0)<CR>
 endif
 " }}}
 " vim-plug config {{{
@@ -113,9 +112,7 @@ Plug 'vimwiki/vimwiki'
 if has('win32')
 	Plug 'gruvbox-community/gruvbox'
 	Plug 'morhetz/gruvbox'
-	Plug 'derekmcloughlin/gvimfullscreen_win32'
-else
-	" for Linux/macOS
+else "for Linux/macOS
 	Plug 'noahfrederick/vim-noctu'
 endif
 
@@ -125,17 +122,15 @@ filetype plugin indent on
 " }}}
 " GUI tweaks {{{
 
-set statusline=
-set statusline+=%t\ 
-set statusline+=%h%w%m%r\ 
-set statusline+=%=%(%l,%c%V\ %=\ %P%) 
-set laststatus=2
-
-" set statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)
-
 " Set theme
 if has('linux')
 	colorscheme noctu
+    " Decided to give statusline on GVim a little break
+    set statusline=
+    set statusline+=%t\ 
+    set statusline+=%h%w%m%r\ 
+    set statusline+=%=%(%l,%c%V\ %=\ %P%) 
+    set laststatus=2
 else
 	let g:gruvbox_italic = 0
 	colorscheme gruvbox
@@ -185,7 +180,7 @@ source $VIMRUNTIME/menu.vim
 set guicursor+=a:blinkon0
 
 if has("gui_running")
-	set lines=30 columns=80
+	set lines=30 columns=85
 endif
 if has('win32')
 	"set guifont=Meslo_LG_S:h14
