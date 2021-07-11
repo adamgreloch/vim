@@ -8,15 +8,15 @@ set runtimepath=$HOME/.vim,$XDG_CONFIG_HOME/vim,$VIM,$VIMRUNTIME,$XDG_CONFIG_HOM
 set encoding=utf8
 set mouse=a
 set backspace=2         " make backspace work like most other programs
-set wildmenu 			" tab completion
+set wildmenu            " tab completion
 set cmdheight=1
 set guioptions=cgt
 set smartindent
 set numberwidth=4
 set laststatus=1
 set ruler
-set diffopt+=vertical	" vertical diff (for fugitive)
-set splitbelow 		    " split everything below (for term)
+set diffopt+=vertical   " vertical diff (for fugitive)
+set splitbelow          " split everything below (for term)
 set foldmethod=marker
 set spellcapcheck=
 set relativenumber
@@ -35,14 +35,14 @@ set ignorecase
 set incsearch
 
 augroup vimrc-incsearch-highlight
-	autocmd!
-	autocmd CmdlineEnter /,\? :set hlsearch
-	autocmd CmdlineLeave /,\? :set nohlsearch
+    autocmd!
+    autocmd CmdlineEnter /,\? :set hlsearch
+    autocmd CmdlineLeave /,\? :set nohlsearch
 augroup END
 nnoremap <silent> <cr> :noh<CR><CR>
 
 if empty(glob(expand("$HOME") . "/.vim/tmp"))
-	silent !mkdir -p ~/.vim/tmp
+    silent !mkdir -p ~/.vim/tmp
 endif
 
 set backup
@@ -57,14 +57,14 @@ language en_US.utf8
 " }}}
 " OS specific settings {{{
 if has('linux')
-	language time pl_PL.utf8
-	let $PDFVIEWER = "zathura"
+    language time pl_PL.utf8
+    let $PDFVIEWER = "zathura"
 endif
 
 if has('win32')
-	language time pl_PL
-	let $PDFVIEWER = "SumatraPDF"
-	let &pythonthreedll = 'C:\python37\python37.dll'
+    language time pl_PL
+    let $PDFVIEWER = "SumatraPDF"
+    let &pythonthreedll = 'C:\python37\python37.dll'
 endif
 " }}}
 " vim-plug config {{{
@@ -72,14 +72,14 @@ endif
 " vim-plug automatic installation
 
 if empty(glob(expand("$HOME") . "/.vim/autoload/plug.vim"))
-	if has('win32')
-		iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
+    if has('win32')
+        iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
     ni $HOME/.vim/autoload/plug.vim -Force
-	else
-		silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-			\ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-		autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-	endif
+    else
+        silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+            \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+    endif
 endif
 
 call plug#begin('~/.vim/plugged')
@@ -108,12 +108,13 @@ Plug 'lifepillar/vim-cheat40'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'vimwiki/vimwiki'
+Plug 'sainnhe/everforest'
 
 if has('win32')
-	Plug 'gruvbox-community/gruvbox'
-	Plug 'morhetz/gruvbox'
+    Plug 'gruvbox-community/gruvbox'
+    Plug 'morhetz/gruvbox'
 else "for Linux/macOS
-	Plug 'noahfrederick/vim-noctu'
+    Plug 'noahfrederick/vim-noctu'
 endif
 
 call plug#end()
@@ -124,36 +125,41 @@ filetype plugin indent on
 
 " Set theme
 if has('linux')
-	colorscheme noctu
+    colorscheme noctu
     " Decided to give statusline on GVim a little break
     set statusline=
     set statusline+=%t\ 
     set statusline+=%h%w%m%r\ 
     set statusline+=%=%(%l,%c%V\ %=\ %P%) 
     set laststatus=2
+
+    "colorscheme noctu
+    colorscheme everforest
+    set background=dark
+    set termguicolors
 else
-	let g:gruvbox_italic = 0
-	colorscheme gruvbox
-	set background=dark
+    let g:gruvbox_italic = 0
+    colorscheme gruvbox
+    set background=dark
 endif
 
 " Goyo breaks my custom styling so I packed them
 " into a function and invoke again on s:goyo_leave()
 function! CustomHi()
-	hi SpellBad cterm=bold ctermfg=167
-	hi VertSplit ctermfg=9 
-	hi CursorLine cterm=none ctermbg=234
-	hi CursorLineNr cterm=bold ctermbg=234
-	hi Statusline cterm=bold ctermfg=16 ctermbg=8
-	hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
+    hi SpellBad cterm=bold ctermfg=167
+    hi VertSplit ctermfg=9 
+    hi CursorLine cterm=none ctermbg=234
+    hi CursorLineNr cterm=bold ctermbg=234
+    hi Statusline cterm=bold ctermfg=16 ctermbg=8
+    hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
     " Highlight characters exceeding 80 per line
     hi ColorColumn ctermbg=4
     call matchadd('ColorColumn', '\%81v', 100)
 endfunction
 
 if has('linux')
-	call CustomHi()
-	set nocursorline
+    call CustomHi()
+    set nocursorline
 endif
 
 " Disable bells
@@ -162,9 +168,9 @@ autocmd GUIEnter * set visualbell t_vb=
 
 " Set scrolloff margin to 33% of winheight
 augroup VCenterCursor
-	au!
-	au BufEnter,WinEnter,WinNew,VimResized *,*.*
-				\ let &scrolloff=winheight(win_getid())/3
+    au!
+    au BufEnter,WinEnter,WinNew,VimResized *,*.*
+                \ let &scrolloff=winheight(win_getid())/3
 augroup END
 
 " Set NERDtree arrows to -/+
@@ -180,13 +186,13 @@ source $VIMRUNTIME/menu.vim
 set guicursor+=a:blinkon0
 
 if has("gui_running")
-	set lines=30 columns=85
+    set lines=30 columns=85
 endif
 if has('win32')
-	"set guifont=Meslo_LG_S:h14
-	set guifont=Fira_Code_Medium:h14
+    "set guifont=Meslo_LG_S:h14
+    set guifont=Fira_Code_Medium:h14
 else
-	set guifont=Monospace\ 12
+    set guifont=Monospace\ 12
 endif
 " }}}
 " Leaders {{{
@@ -218,9 +224,9 @@ nnoremap <leader>ep :e ~/Pudlo/papiery/
 
 " limelight
 if has('linux')
-	nnoremap <silent><leader>L :Limelight!!<cr>:set cursorline!<cr>
+    nnoremap <silent><leader>L :Limelight!!<cr>:set cursorline!<cr>
 else
-	nnoremap <silent><leader>L :Limelight!! 0.8<cr>:set cursorline!<cr>
+    nnoremap <silent><leader>L :Limelight!! 0.8<cr>:set cursorline!<cr>
 endif
 
 " }}}
@@ -234,7 +240,7 @@ nnoremap <silent><leader>od :Files ~/Pudlo/<CR>
 let g:fzf_layout = { 'down': '~30%' }
 
 if has('win32')
-	let g:fzf_preview_window = ''
+    let g:fzf_preview_window = ''
 endif
 " }}}
 " UltiSnips {{{
@@ -269,8 +275,8 @@ endfunction
 function! s:goyo_leave()
     silent !tmux set status on
     silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-	call CustomHi()
-	set showmode
+    call CustomHi()
+    set showmode
 endfunction
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
@@ -286,16 +292,16 @@ let g:limelight_conceal_ctermfg = 236
 " Create parent directory on save because I'm lazy {{{
 " https://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save
 function s:MkNonExDir(file, buf)
-	if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
-		let dir=fnamemodify(a:file, ':h')
-		if !isdirectory(dir)
-			call mkdir(dir, 'p')
-		endif
-	endif
+    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+        let dir=fnamemodify(a:file, ':h')
+        if !isdirectory(dir)
+            call mkdir(dir, 'p')
+        endif
+    endif
 endfunction
 augroup BWCCreateDir
-	autocmd!
-	autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+    autocmd!
+    autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
 augroup END
 
 " }}}
@@ -341,18 +347,20 @@ function! ForC()
     nnoremap <F9> :w<CR>:exec '!gcc -std=c11' shellescape(@%, 1) '&& ./a.out'<CR>
 endfunction
 
-au BufNewFile,BufRead *.c :call ForC()
+au BufNewFile,BufRead *.c call ForC()
+au BufNewFile,BufRead *.c ALEDisable
+
 " }}}
 " Python {{{
 function! ForPython()
     " PEP 8
-	set tabstop=4
-	set softtabstop=4
-	set shiftwidth=4
-	set textwidth=79
-	set expandtab
-	set autoindent
-	set fileformat=unix
+    set tabstop=4
+    set softtabstop=4
+    set shiftwidth=4
+    set textwidth=79
+    set expandtab
+    set autoindent
+    set fileformat=unix
     autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
     autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 endfunction
@@ -387,9 +395,9 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " Spellcheck {{{
 " If .add file was updated via git, recompile .spl
 for d in glob('~/.vim/spell/*.add', 1, 1)
-	if filereadable(d) && (!filereadable(d . '.spl') || getftime(d) > getftime(d . '.spl'))
-		silent exec 'mkspell! ' . fnameescape(d)
-	endif
+    if filereadable(d) && (!filereadable(d . '.spl') || getftime(d) > getftime(d . '.spl'))
+        silent exec 'mkspell! ' . fnameescape(d)
+    endif
 endfor
 
 " }}}
@@ -402,9 +410,9 @@ let g:pandoc#command#latex_engine = "pdflatex"
 nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Pudlo/papiery/defaults.latex"<cr>
 
 if has("linux")
-	nnoremap <expr> <leader>oo ":!".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr><cr>"
+    nnoremap <expr> <leader>oo ":!".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr><cr>"
 else
-	nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
+    nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
 endif
 
 " }}}
@@ -414,18 +422,18 @@ let g:pencil#map#suspend_af = 'K'
 let g:pencil#conceallevel = 0
 
 function! Prose()
-	call pencil#init({'wrap': 'hard', 'textwidth': '79'})
+    call pencil#init({'wrap': 'hard', 'textwidth': '79'})
     set nowrap
-	nnoremap <buffer> k gk
-	nnoremap <buffer> j gj
-	setlocal statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %{wordcount().words}w\ %=\ %P%)
-	set spelllang=pl
-	set nospell
+    nnoremap <buffer> k gk
+    nnoremap <buffer> j gj
+    setlocal statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %{wordcount().words}w\ %=\ %P%)
+    set spelllang=pl
+    set nospell
 endfunction
 
 "autocmd FileType markdown,md,txt  call Prose()
 autocmd BufEnter *.md,*.txt                 call Prose()
-autocmd FileType tex 		                call pencil#init({'wrap': 'soft'})
+autocmd FileType tex                        call pencil#init({'wrap': 'soft'})
 
 " }}}
 " Markdown {{{
@@ -433,9 +441,9 @@ let g:vim_markdown_folding_disabled = 1
 
 " no more auto bullets and indentation
 function! NoIndent()
-	setlocal noautoindent
-	setlocal nocindent
-	set indentexpr=""
+    setlocal noautoindent
+    setlocal nocindent
+    set indentexpr=""
 endfunction
 
 " https://vi.stackexchange.com/questions/12000/prevent-neovim-from-breaking-one-markdown-bullet-point-into-multiple-ones
@@ -448,7 +456,7 @@ autocmd BufEnter * set fo-=n fo-=r fo-=q
 " }}}
 " LaTeX (vimtex) {{{
 "if empty(v:servername) && exists('*remote_startserver')
-"	call remote_startserver('VIM')
+"   call remote_startserver('VIM')
 "endif
 
 let g:tex_flavor = "latex"
@@ -462,26 +470,26 @@ let g:ale_linters = {
 \}
 
 if has('linux')
-	let g:vimtex_view_method = 'zathura'
+    let g:vimtex_view_method = 'zathura'
 endif
 
 au BufNewFile,BufRead *.tikz set filetype=tex
 
 let g:vimtex_compiler_latexmk = {
-		\ 'build_dir' : 'build',
-		\ 'callback' : 1,
-		\ 'continuous' : 1,
-		\ 'executable' : 'latexmk',
-		\ 'hooks' : [],
-		\ 'options' : [
-		\   '-pdf',
-		\   '-verbose',
-		\   '-file-line-error',
-		\   '-synctex=1',
-		\   '-interaction=nonstopmode',
-		\		'-shell-escape',
-		\ ],
-		\}
+        \ 'build_dir' : 'build',
+        \ 'callback' : 1,
+        \ 'continuous' : 1,
+        \ 'executable' : 'latexmk',
+        \ 'hooks' : [],
+        \ 'options' : [
+        \   '-pdf',
+        \   '-verbose',
+        \   '-file-line-error',
+        \   '-synctex=1',
+        \   '-interaction=nonstopmode',
+        \       '-shell-escape',
+        \ ],
+        \}
 
 let g:tex_conceal='abdmg'
 let g:vimtex_quickfix_open_on_warning = 0
@@ -490,7 +498,7 @@ let g:vimtex_quickfix_open_on_warning = 0
 " Creates a new .md file with a date on top and appends time of every new entry
 " just like org-journal
 function! JournalOpen()
-	return ':e ~/Pudlo/journal/'.strftime('%Y%m%d').'.txt.gpg'
+    return ':e ~/Pudlo/journal/'.strftime('%Y%m%d').'.txt.gpg'
 endfunction
 
 nnoremap <expr> <leader>oj JournalOpen()
