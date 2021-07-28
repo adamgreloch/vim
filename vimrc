@@ -133,10 +133,10 @@ if has('linux')
     set statusline+=%=%(%l,%c%V\ %=\ %P%) 
     set laststatus=2
 
-    "colorscheme noctu
-    colorscheme everforest
-    set background=dark
-    set termguicolors
+    colorscheme noctu
+    "colorscheme everforest
+    "set background=dark
+    "set termguicolors
 else
     let g:gruvbox_italic = 0
     colorscheme gruvbox
@@ -522,6 +522,7 @@ hi VimWikiItalic ctermfg=4
 autocmd BufEnter *.wiki set textwidth=79 nowrap
 
 autocmd BufEnter *.wiki nnoremap <buffer><silent><leader>q :VimwikiGoBackLink<cr>
+autocmd BufEnter *.wiki inoremap <buffer><silent><leader>p [[<C-O>"+p\|
 autocmd BufEnter index.wiki nnoremap <buffer><leader>q :q<cr>
 
 " }}}
