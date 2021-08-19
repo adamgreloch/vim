@@ -97,18 +97,16 @@ Plug 'easymotion/vim-easymotion'
 Plug 'tpope/vim-dispatch'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'freitass/todo.txt-vim'
 Plug 'jamessan/vim-gnupg'
 Plug 'plasticboy/vim-markdown'
 Plug 'jsit/toast.vim'
 Plug 'davidhalter/jedi-vim'
 Plug 'rhysd/vim-grammarous'
 Plug 'dense-analysis/ale'
-Plug 'lifepillar/vim-cheat40'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'vimwiki/vimwiki'
-Plug 'sainnhe/everforest'
+Plug 'tpope/vim-surround'
 
 if has('win32')
     Plug 'gruvbox-community/gruvbox'
@@ -125,13 +123,12 @@ filetype plugin indent on
 
 " Set theme
 if has('linux')
-    colorscheme noctu
-    " Decided to give statusline on GVim a little break
-    set statusline=
-    set statusline+=%t\ 
-    set statusline+=%h%w%m%r\ 
-    set statusline+=%=%(%l,%c%V\ %=\ %P%) 
-    set laststatus=2
+    " Decided to give statusline a little break
+    "set statusline=
+    "set statusline+=%t\ 
+    "set statusline+=%h%w%m%r\ 
+    "set statusline+=%=%(%l,%c%V\ %=\ %P%) 
+    "set laststatus=2
 
     colorscheme noctu
     "colorscheme everforest
@@ -152,9 +149,6 @@ function! CustomHi()
     hi CursorLineNr cterm=bold ctermbg=234
     hi Statusline cterm=bold ctermfg=16 ctermbg=8
     hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
-    " Highlight characters exceeding 80 per line
-    hi ColorColumn ctermbg=4
-    call matchadd('ColorColumn', '\%81v', 100)
 endfunction
 
 if has('linux')
@@ -255,13 +249,6 @@ nnoremap z<Space> za
 
 " Some format options
 au FileType vim set fo-=c fo-=r fo-=o
-
-" Todo.txt-vim detect ft
-autocmd BufNewFile,BufRead [Tt]odo.txt set filetype=todo
-autocmd BufNewFile,BufRead *.[Tt]odo.txt set filetype=todo
-autocmd BufNewFile,BufRead [Dd]one.txt set filetype=todo
-autocmd BufNewFile,BufRead *.[Dd]one.txt set filetype=todo
-
 " For the sake of complete distraction-free environment {{{
 
 " Goyo settings
@@ -351,6 +338,14 @@ au BufNewFile,BufRead *.c call ForC()
 au BufNewFile,BufRead *.c ALEDisable
 
 " }}}
+" C++ {{{
+function! ForCPP()
+    nnoremap <F9> :w<CR>:exec '!g++ -std=c++11' shellescape(@%, 1) '&& ./a.out'<CR>
+endfunction
+
+au BufNewFile,BufRead *.cpp call ForCPP()
+au BufNewFile,BufRead *.cpp ALEDisable
+" }}}
 " Python {{{
 function! ForPython()
     " PEP 8
@@ -368,8 +363,6 @@ endfunction
 au BufNewFile,BufRead *.py :call ForPython()
 au BufNewFile,BufRead *.py :call CallJedi()
 
-" Run current .py
-
 " }}}
 " Java {{{
 function! ForJava()
@@ -380,15 +373,12 @@ endfunction
 
 autocmd FileType java set makeprg=javac\ %
 autocmd FileType java call ForJava()
-":!java %:r<CR>
-":copen<Return>
 " }}}
 " Misc {{{
 " UltiSnips configuration
 let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-
 " }}}
 " }}}
 " Writing text {{{
@@ -524,7 +514,6 @@ autocmd BufEnter *.wiki set textwidth=79 nowrap
 autocmd BufEnter *.wiki nnoremap <buffer><silent><leader>q :VimwikiGoBackLink<cr>
 autocmd BufEnter *.wiki inoremap <buffer><silent><leader>p [[<C-O>"+p\|
 autocmd BufEnter index.wiki nnoremap <buffer><leader>q :q<cr>
-
 " }}}
 " }}}
 
