@@ -86,7 +86,6 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
-Plug 'preservim/nerdtree'
 Plug 'reedes/vim-pencil'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/goyo.vim'
@@ -190,7 +189,6 @@ else
 endif
 " }}}
 " Leaders {{{
-nnoremap <leader>n :NERDTree %:h<cr>
 nnoremap <leader>u :UndotreeShow<cr>
 nnoremap <leader>w :w<cr>
 nnoremap <leader>e :w!<cr>:e %:h<cr>
