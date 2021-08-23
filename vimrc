@@ -424,8 +424,10 @@ function! Prose()
 endfunction
 
 "autocmd FileType markdown,md,txt  call Prose()
-autocmd BufEnter *.md,*.txt                 call Prose()
+autocmd BufEnter *.md,*.txt,*.mdx           call Prose()
 autocmd FileType tex                        call pencil#init({'wrap': 'soft'})
+autocmd BufEnter *.mdx inoremap <buffer><silent><leader>p <XA href="<C-O>"+p"></XA><C-O>F<
+"autocmd BufEnter *.mdx nnoremap <buffer><silent><leader>p c<XA href="<C-O>"+p><C-O>p</XA>
 
 " }}}
 " Markdown {{{
