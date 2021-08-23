@@ -21,7 +21,7 @@ set foldmethod=marker
 set spellcapcheck=
 set relativenumber
 set number
-set cursorline
+"set cursorline
 set updatetime=50
 set fileformat=unix
 
@@ -183,7 +183,7 @@ if has("gui_running")
 endif
 if has('win32')
     "set guifont=Meslo_LG_S:h14
-    set guifont=Fira_Code_Medium:h14
+    set guifont=Fira_Code_Medium:h18
 else
     set guifont=Monospace\ 12
 endif
@@ -251,15 +251,19 @@ au FileType vim set fo-=c fo-=r fo-=o
 
 " Goyo settings
 function! s:goyo_enter()
-    silent !tmux set status off
-    silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+    if has("linux")
+        silent !tmux set status off
+        silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+    endif
     set guicursor+=a:blinkon0
     set noshowmode
 endfunction
 
 function! s:goyo_leave()
-    silent !tmux set status on
-    silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+    if has("linux")
+        silent !tmux set status on
+        silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+    endif
     call CustomHi()
     set showmode
 endfunction
@@ -505,7 +509,7 @@ let g:vimwiki_auto_header = 1
 let g:vimwiki_toc_header = 'TOC'
 let g:vimwiki_global_ext = 0
 
-hi VimWikiItalic ctermfg=4
+hi VimWikiItalic ctermfg=4 guifg=LightBlue
 
 autocmd BufEnter *.wiki set textwidth=79 nowrap
 
