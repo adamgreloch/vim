@@ -92,7 +92,6 @@ Plug 'reedes/vim-pencil'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/goyo.vim'
 Plug 'lervag/vimtex'
-Plug 'vim-pandoc/vim-pandoc'
 Plug 'junegunn/limelight.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'tpope/vim-dispatch'
@@ -102,11 +101,9 @@ Plug 'jamessan/vim-gnupg'
 Plug 'plasticboy/vim-markdown'
 Plug 'jsit/toast.vim'
 Plug 'davidhalter/jedi-vim'
-Plug 'rhysd/vim-grammarous'
 Plug 'dense-analysis/ale'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
-Plug 'vimwiki/vimwiki'
 Plug 'tpope/vim-surround'
 
 if has('win32')
@@ -124,16 +121,8 @@ filetype plugin indent on
 
 " Set theme
 if has('linux')
-    " Decided to give statusline a little break
-    "set statusline=
-    "set statusline+=%t\ 
-    "set statusline+=%h%w%m%r\ 
-    "set statusline+=%=%(%l,%c%V\ %=\ %P%) 
-    "set laststatus=2
+    set t_Co=16
     colorscheme noctu
-    "colorscheme everforest
-    "set background=dark
-    "set termguicolors
 else
     let g:gruvbox_italic = 0
     colorscheme gruvbox
@@ -227,7 +216,7 @@ endif
 nnoremap <silent><leader>o :Files<CR>
 nnoremap <silent><leader>oh :Files ~<CR>
 nnoremap <silent><leader>og :Files ~/git/<CR>
-nnoremap <silent><leader>op :Files ~/Pudlo/papiery/<CR>
+nnoremap <silent><leader>on :Files ~/Pudlo/notatki/<CR>
 nnoremap <silent><leader>od :Files ~/Pudlo/<CR>
 
 let g:fzf_layout = { 'down': '~30%' }
@@ -320,6 +309,14 @@ nnoremap <C-H> <C-W><C-H>
 " Brackets
 inoremap {<CR> {<CR>}<ESC>O
 inoremap {;<CR> {<CR>};<ESC>O
+
+" NGrep (connermcd)
+command! -nargs=1 Ngrep vimgrep "<args>" ~/Pudlo/notatki/**/*.md
+nnoremap <leader>[ :Ngrep 
+
+nnoremap <C-n> :cnext<cr>z.
+nnoremap <C-p> :cprev<cr>z.
+
 " }}}
 " Coding {{{
 " vim-jedi {{{
@@ -400,18 +397,17 @@ endfor
 
 " }}}
 " pandoc {{{
-let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
-let g:pandoc#command#latex_engine = "pdflatex"
-"let g:pandoc#command#autoexec_on_writes = '1'
-"let g:pandoc#command#autoexec_command = ':Pandoc pdf --template="~/Pudlo/papiery/defaults.latex"'
-
-nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Pudlo/papiery/defaults.latex"<cr>
-
-if has("linux")
-    nnoremap <expr> <leader>oo ":!".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr><cr>"
-else
-    nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
-endif
+" TODO: write an external pandoc script
+"let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
+"let g:pandoc#command#latex_engine = "pdflatex"
+"
+"nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Pudlo/papiery/defaults.latex"<cr>
+"
+"if has("linux")
+"    nnoremap <expr> <leader>oo ":!".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr><cr>"
+"else
+"    nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
+"endif
 
 " }}}
 " Pencil {{{
@@ -429,7 +425,7 @@ function! Prose()
 endfunction
 
 "autocmd FileType markdown,md,txt  call Prose()
-autocmd BufEnter *.md,*.txt,*.mdx           call Prose()
+autocmd BufEnter *.txt,*.mdx           call Prose()
 autocmd BufEnter *.md                       set ft=markdown
 autocmd FileType tex                        call pencil#init({'wrap': 'soft'})
 autocmd BufEnter *.mdx inoremap <buffer><silent><leader>p <XA href="<C-O>"+p"></XA><C-O>F<
@@ -452,6 +448,7 @@ let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 
 autocmd FileType markdown call NoIndent()
+autocmd FileType markdown set textwidth=79
 autocmd BufEnter * set fo-=n fo-=r fo-=q
 " }}}
 " LaTeX (vimtex) {{{
@@ -503,27 +500,28 @@ endfunction
 
 nnoremap <expr> <leader>oj JournalOpen()
 
-autocmd BufNewFile ~/Pudlo/journal/* $pu!=strftime('%A, %d.%m.%y')
+autocmd BufNewFile ~/Pudlo/journal/*  $pu!=strftime('%A, %d.%m.%y')
 autocmd BufWinEnter ~/Pudlo/journal/* setlocal tw=79 nowrap
 autocmd BufWinEnter ~/Pudlo/journal/* call append(line('$'), '')
 autocmd BufWinEnter ~/Pudlo/journal/* $pu!=strftime('%H:%M ') | :normal GA
 
 " }}}
 " vimwiki {{{
-let g:vimwiki_list = [{'path':'$HOME/Pudlo/wszystko', 'path_html':'$HOME/Pudlo/wszystko/export/html/', 'auto_toc': 1}]
-
-let g:vimwiki_hl_headers = 1
-let g:vimwiki_auto_header = 1
-let g:vimwiki_toc_header = 'TOC'
-let g:vimwiki_global_ext = 0
-
-hi VimWikiItalic ctermfg=4 guifg=LightBlue
-
-autocmd BufEnter *.wiki set textwidth=79 nowrap
-
-autocmd BufEnter *.wiki nnoremap <buffer><silent><leader>q :VimwikiGoBackLink<cr>
-autocmd BufEnter *.wiki inoremap <buffer><silent><leader>p [[<C-O>"+p\|
-autocmd BufEnter index.wiki nnoremap <buffer><leader>q :q<cr>
+" TODO: move my notes to raw markdown
+"let g:vimwiki_list = [{'path':'$HOME/Pudlo/wszystko', 'path_html':'$HOME/Pudlo/wszystko/export/html/', 'auto_toc': 1}]
+"
+"let g:vimwiki_hl_headers = 1
+"let g:vimwiki_auto_header = 1
+"let g:vimwiki_toc_header = 'TOC'
+"let g:vimwiki_global_ext = 0
+"
+"hi VimWikiItalic ctermfg=4 guifg=LightBlue
+"
+"autocmd BufEnter *.wiki set textwidth=79 nowrap
+"
+"autocmd BufEnter *.wiki nnoremap <buffer><silent><leader>q :VimwikiGoBackLink<cr>
+"autocmd BufEnter *.wiki inoremap <buffer><silent><leader>p [[<C-O>"+p\|
+"autocmd BufEnter index.wiki nnoremap <buffer><leader>q :q<cr>
 " }}}
 " }}}
 
