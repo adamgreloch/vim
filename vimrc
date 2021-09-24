@@ -53,11 +53,8 @@ set directory=~/.vim/tmp//
 set undofile
 set undodir=~/.vim/tmp//
 
-" }}}
-" Language {{{
 language en_US.utf8
-" }}}
-" OS specific settings {{{
+
 if has('linux')
     language time pl_PL.utf8
     let $PDFVIEWER = "zathura"
@@ -66,13 +63,9 @@ endif
 if has('win32')
     language time pl_PL
     let $PDFVIEWER = "SumatraPDF"
-    let &pythonthreedll = 'C:\python37\python37.dll'
 endif
 " }}}
-" vim-plug config {{{
-
-" vim-plug automatic installation
-
+" Plugins {{{
 if empty(glob(expand("$HOME") . "/.vim/autoload/plug.vim"))
     if has('win32')
         iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
@@ -115,10 +108,8 @@ endif
 
 call plug#end()
 filetype plugin indent on
-
 " }}}
-" GUI tweaks {{{
-
+" Look and feel {{{
 " Set theme
 if has('linux')
     set t_Co=16
@@ -162,20 +153,21 @@ let g:NERDTreeDirArrowCollapsible = '-'
 
 " }}}
 " GVIM/Windows tweaks {{{
-set langmenu=en_US
-let $LANG = 'en_US'
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
-set guicursor+=a:blinkon0
-
 if has("gui_running")
+    set langmenu=en_US
+    let $LANG = 'en_US'
+    source $VIMRUNTIME/delmenu.vim
+    source $VIMRUNTIME/menu.vim
+    set guicursor+=a:blinkon0
+
     set lines=30 columns=85
-endif
-if has('win32')
-    "set guifont=Meslo_LG_S:h14
-    set guifont=Fira_Code_Medium:h18
-else
-    set guifont=Monospace\ 12
+
+    if has('win32')
+        "set guifont=Meslo_LG_S:h14
+        set guifont=Fira_Code_Medium:h18
+    else
+        set guifont=Monospace\ 12
+    endif
 endif
 " }}}
 " Leaders {{{
@@ -212,7 +204,7 @@ else
 endif
 
 " }}}
-" FZF {{{
+" Fuzzy {{{
 nnoremap <silent><leader>o :Files<CR>
 nnoremap <silent><leader>oh :Files ~<CR>
 nnoremap <silent><leader>og :Files ~/git/<CR>
@@ -227,19 +219,11 @@ endif
 " }}}
 " UltiSnips {{{
 let g:UltiSnipsSnippetDirectories=["ultisnips"]
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " }}}
-" Misc {{{
-" GPG
-let g:GPGDefaultRecipients = ['zplhatesbananas@gmail.com']
-
-" Toggle folding
-nnoremap z<Space> za
-
-" Some format options
-au FileType vim set fo-=c fo-=r fo-=o
-" For the sake of complete distraction-free environment {{{
-
-" Goyo settings
+" Zen {{{
 function! s:goyo_enter()
     if has("linux")
         silent !tmux set status off
@@ -261,33 +245,18 @@ endfunction
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
 
-" Limelight settings
 let g:limelight_bop = '^.*$'
 let g:limelight_eop = '\n'
 let g:limelight_paragraph_span = 3
 let g:limelight_conceal_ctermfg = 236
-
-"}}}
-" Create parent directory on save because I'm lazy {{{
-" https://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save
-function s:MkNonExDir(file, buf)
-    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
-        let dir=fnamemodify(a:file, ':h')
-        if !isdirectory(dir)
-            call mkdir(dir, 'p')
-        endif
-    endif
-endfunction
-augroup BWCCreateDir
-    autocmd!
-    autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
-augroup END
-
-" }}}
 " }}}
 " Mappings {{{
+" Toggle folding
+nnoremap z<Space> za
+
 " Disable Ex mode
 nnoremap Q <Nop>
+
 " Cursor movement
 nnoremap j gj
 nnoremap k gk
@@ -317,6 +286,8 @@ nnoremap <leader>[ :Ngrep
 nnoremap <C-n> :cnext<cr>z.
 nnoremap <C-p> :cprev<cr>z.
 
+" Search and replace selected text
+vnoremap <C-r> "hy:%s/<C-r>h//g<left><left>
 " }}}
 " Coding {{{
 " vim-jedi {{{
@@ -329,7 +300,7 @@ function! CallJedi()
 endfunction
 let g:jedi#show_call_signatures = 0
 " }}}
-" C {{{
+" C/C++ {{{
 function! ForC()
     nnoremap <F9> :w<CR>:exec '!gcc -std=c11' shellescape(@%, 1) '&& ./a.out'<CR>
 endfunction
@@ -337,8 +308,6 @@ endfunction
 au BufNewFile,BufRead *.c call ForC()
 au BufNewFile,BufRead *.c ALEDisable
 
-" }}}
-" C++ {{{
 function! ForCPP()
     nnoremap <F9> :w<CR>:exec '!g++ -std=c++11' shellescape(@%, 1) '&& ./a.out'<CR>
 endfunction
@@ -369,24 +338,8 @@ au BufNewFile,BufRead *.py :call ForPython()
 au BufNewFile,BufRead *.py :call CallJedi()
 
 " }}}
-" Java {{{
-function! ForJava()
-    nnoremap <F9> :Make<CR>
-    nnoremap <silent><F10> :terminal java %:r $SHELL<CR>
-    set errorformat=%A%f:%l:\ %m,%-Z%p^,%-C%.%#
-endfunction
-
-autocmd FileType java set makeprg=javac\ %
-autocmd FileType java call ForJava()
 " }}}
-" Misc {{{
-" UltiSnips configuration
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
-" }}}
-" }}}
-" Writing text {{{
+" Text {{{
 " Spellcheck {{{
 " If .add file was updated via git, recompile .spl
 for d in glob('~/.vim/spell/*.add', 1, 1)
@@ -394,10 +347,9 @@ for d in glob('~/.vim/spell/*.add', 1, 1)
         silent exec 'mkspell! ' . fnameescape(d)
     endif
 endfor
-
 " }}}
 " pandoc {{{
-" TODO: write an external pandoc script
+" TODO: use external pandoc
 "let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
 "let g:pandoc#command#latex_engine = "pdflatex"
 "
@@ -408,7 +360,6 @@ endfor
 "else
 "    nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
 "endif
-
 " }}}
 " Pencil {{{
 " Suspend autoformat during the next Insert
@@ -452,10 +403,6 @@ autocmd FileType markdown set textwidth=79
 autocmd BufEnter * set fo-=n fo-=r fo-=q
 " }}}
 " LaTeX (vimtex) {{{
-"if empty(v:servername) && exists('*remote_startserver')
-"   call remote_startserver('VIM')
-"endif
-
 let g:tex_flavor = "latex"
 let g:vimtex_motion_matchparen = 0
 let g:vimtex_indent_enabled = 0
@@ -492,36 +439,38 @@ let g:tex_conceal='abdmg'
 let g:vimtex_quickfix_open_on_warning = 0
 " }}}
 " Journal {{{
-" Creates a new .md file with a date on top and appends time of every new entry
-" just like org-journal
+" Creates a new .txt.gpg file with a date on top and appends time of every new entry
+let $JOURNALDIR = "/home/adam/Pudlo/journal"
+
 function! JournalOpen()
-    return ':e ~/Pudlo/journal/'.strftime('%Y%m%d').'.txt.gpg'
+    return ':e '.$JOURNALDIR.'/'.strftime('%Y%m%d').'.txt.gpg'
 endfunction
 
 nnoremap <expr> <leader>oj JournalOpen()
 
-autocmd BufNewFile ~/Pudlo/journal/*  $pu!=strftime('%A, %d.%m.%y')
-autocmd BufWinEnter ~/Pudlo/journal/* setlocal tw=79 nowrap
-autocmd BufWinEnter ~/Pudlo/journal/* call append(line('$'), '')
-autocmd BufWinEnter ~/Pudlo/journal/* $pu!=strftime('%H:%M ') | :normal GA
+autocmd BufNewFile  $JOURNALDIR/* $pu!=strftime('%A, %d.%m.%y')
+autocmd BufWinEnter $JOURNALDIR/* setlocal tw=79 nowrap
+autocmd BufWinEnter $JOURNALDIR/* call append(line('$'), '') | $pu!=strftime('%H:%M') | call append(line('$'), '') | normal GA
 
 " }}}
-" vimwiki {{{
-" TODO: move my notes to raw markdown
-"let g:vimwiki_list = [{'path':'$HOME/Pudlo/wszystko', 'path_html':'$HOME/Pudlo/wszystko/export/html/', 'auto_toc': 1}]
-"
-"let g:vimwiki_hl_headers = 1
-"let g:vimwiki_auto_header = 1
-"let g:vimwiki_toc_header = 'TOC'
-"let g:vimwiki_global_ext = 0
-"
-"hi VimWikiItalic ctermfg=4 guifg=LightBlue
-"
-"autocmd BufEnter *.wiki set textwidth=79 nowrap
-"
-"autocmd BufEnter *.wiki nnoremap <buffer><silent><leader>q :VimwikiGoBackLink<cr>
-"autocmd BufEnter *.wiki inoremap <buffer><silent><leader>p [[<C-O>"+p\|
-"autocmd BufEnter index.wiki nnoremap <buffer><leader>q :q<cr>
 " }}}
-" }}}
+" Misc {{{
+let g:GPGDefaultRecipients = ['zplhatesbananas@gmail.com']
 
+au FileType vim set fo-=c fo-=r fo-=o
+
+" Create parent directory on save 
+" https://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save
+function s:MkNonExDir(file, buf)
+    if empty(getbufvar(a:buf, '&buftype')) && a:file!~#'\v^\w+\:\/'
+        let dir=fnamemodify(a:file, ':h')
+        if !isdirectory(dir)
+            call mkdir(dir, 'p')
+        endif
+    endif
+endfunction
+augroup BWCCreateDir
+    autocmd!
+    autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
+augroup END
+" }}}
