@@ -12,6 +12,8 @@ set wildmenu            " tab completion
 set cmdheight=1
 set guioptions=cgt
 set smartindent
+set nowrap
+set textwidth=79
 set numberwidth=4
 set laststatus=1
 set ruler
@@ -128,7 +130,6 @@ if has('linux')
     "set statusline+=%h%w%m%r\ 
     "set statusline+=%=%(%l,%c%V\ %=\ %P%) 
     "set laststatus=2
-
     colorscheme noctu
     "colorscheme everforest
     "set background=dark
@@ -151,7 +152,7 @@ function! CustomHi()
 endfunction
 
 if has('linux')
-    call CustomHi()
+    "call CustomHi()
     set nocursorline
 endif
 
@@ -348,6 +349,11 @@ endfunction
 au BufNewFile,BufRead *.cpp call ForCPP()
 au BufNewFile,BufRead *.cpp ALEDisable
 " }}}
+" OCaml {{{
+let g:opamshare = substitute(system('opam var share'),'\n$','','''')
+execute "set rtp+=" . g:opamshare . "/merlin/vim"
+execute "helptags " . g:opamshare . "/merlin/vim/doc"
+" }}}
 " Python {{{
 function! ForPython()
     " PEP 8
@@ -415,7 +421,6 @@ let g:pencil#conceallevel = 0
 
 function! Prose()
     call pencil#init({'wrap': 'hard', 'textwidth': '79'})
-    set nowrap
     nnoremap <buffer> k gk
     nnoremap <buffer> j gj
     setlocal statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %{wordcount().words}w\ %=\ %P%)
@@ -425,6 +430,7 @@ endfunction
 
 "autocmd FileType markdown,md,txt  call Prose()
 autocmd BufEnter *.md,*.txt,*.mdx           call Prose()
+autocmd BufEnter *.md                       set ft=markdown
 autocmd FileType tex                        call pencil#init({'wrap': 'soft'})
 autocmd BufEnter *.mdx inoremap <buffer><silent><leader>p <XA href="<C-O>"+p"></XA><C-O>F<
 "autocmd BufEnter *.mdx nnoremap <buffer><silent><leader>p c<XA href="<C-O>"+p><C-O>p</XA>
