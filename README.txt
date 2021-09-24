@@ -1,1 +1,1 @@
-:q
+vim is nice
