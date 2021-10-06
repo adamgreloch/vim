@@ -88,7 +88,6 @@ Plug 'lervag/vimtex'
 Plug 'junegunn/limelight.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'tpope/vim-dispatch'
-Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'jamessan/vim-gnupg'
 Plug 'plasticboy/vim-markdown'
@@ -99,10 +98,15 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-surround'
 
+if has('python')
+    Plug 'SirVer/ultisnips'
+endif
+
 if has('win32')
     Plug 'gruvbox-community/gruvbox'
     Plug 'morhetz/gruvbox'
-else "for Linux/macOS
+else
+    " Linux/macOS
     Plug 'noahfrederick/vim-noctu'
 endif
 
@@ -316,9 +320,11 @@ au BufNewFile,BufRead *.cpp call ForCPP()
 au BufNewFile,BufRead *.cpp ALEDisable
 " }}}
 " OCaml {{{
-let g:opamshare = substitute(system('opam var share'),'\n$','','''')
-execute "set rtp+=" . g:opamshare . "/merlin/vim"
-execute "helptags " . g:opamshare . "/merlin/vim/doc"
+if has('python')
+    let g:opamshare = substitute(system('opam var share'),'\n$','','''')
+    execute "set rtp+=" . g:opamshare . "/merlin/vim"
+    execute "helptags " . g:opamshare . "/merlin/vim/doc"
+endif
 " }}}
 " Python {{{
 function! ForPython()
