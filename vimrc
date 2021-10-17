@@ -15,7 +15,7 @@ set smartindent
 set nowrap
 set textwidth=79
 set numberwidth=4
-set laststatus=1
+set laststatus=2
 set ruler
 set diffopt+=vertical   " vertical diff (for fugitive)
 set splitbelow          " split everything below (for term)
@@ -88,15 +88,17 @@ Plug 'lervag/vimtex'
 Plug 'junegunn/limelight.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 'tpope/vim-dispatch'
+Plug 'plasticboy/vim-markdown'
+Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'jamessan/vim-gnupg'
-Plug 'plasticboy/vim-markdown'
 Plug 'jsit/toast.vim'
 Plug 'davidhalter/jedi-vim'
 Plug 'dense-analysis/ale'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-surround'
+Plug 'Yggdroot/indentLine'
 
 if has('python')
     Plug 'SirVer/ultisnips'
@@ -114,10 +116,13 @@ call plug#end()
 filetype plugin indent on
 " }}}
 " Look and feel {{{
+set listchars=tab:▸\ ,eol:¬
+
 " Set theme
 if has('linux')
     set t_Co=16
     colorscheme noctu
+    "colorscheme desert
 else
     let g:gruvbox_italic = 0
     colorscheme gruvbox
@@ -209,13 +214,14 @@ endif
 
 " }}}
 " Fuzzy {{{
-nnoremap <silent><leader>o :Files<CR>
 nnoremap <silent><leader>oh :Files ~<CR>
 nnoremap <silent><leader>og :Files ~/git/<CR>
 nnoremap <silent><leader>on :Files ~/Pudlo/notatki/<CR>
-nnoremap <silent><leader>od :Files ~/Pudlo/<CR>
+nnoremap <silent><leader>od :Files <CR>
+nnoremap <silent><leader>op :Files ~/Pudlo/<CR>
+nnoremap <silent><leader>os :Files ~/Pudlo/studia/I11/<CR>
 
-let g:fzf_layout = { 'down': '~30%' }
+let g:fzf_layout = { 'down': '~40%' }
 
 if has('win32')
     let g:fzf_preview_window = ''
@@ -355,8 +361,9 @@ for d in glob('~/.vim/spell/*.add', 1, 1)
 endfor
 " }}}
 " pandoc {{{
-" TODO: use external pandoc
+"TODO: use external pandoc
 "let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
+"let g:pandoc#modules#enabled = ["command"]
 "let g:pandoc#command#latex_engine = "pdflatex"
 "
 "nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Pudlo/papiery/defaults.latex"<cr>
@@ -382,7 +389,7 @@ function! Prose()
 endfunction
 
 "autocmd FileType markdown,md,txt  call Prose()
-autocmd BufEnter *.txt,*.mdx           call Prose()
+"autocmd BufEnter *.txt,*.mdx           call Prose()
 autocmd BufEnter *.md                       set ft=markdown
 "autocmd FileType tex                        call pencil#init({'wrap': 'soft'})
 autocmd BufEnter *.mdx inoremap <buffer><silent><leader>p <XA href="<C-O>"+p"></XA><C-O>F<
@@ -405,8 +412,18 @@ let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 
 autocmd FileType markdown call NoIndent()
-autocmd FileType markdown set textwidth=79
+autocmd FileType markdown setl textwidth=79
 autocmd BufEnter * set fo-=n fo-=r fo-=q
+
+" Note-taking for lectures
+function! MakeNoteTitle()
+    let title = "# ".expand('%:t:r')."\n"."> Data: ".strftime('%d-%m-%y')."\n"."\n"
+    pu!=title
+    normal GA
+endfunction
+     
+autocmd BufNewFile $NOTESDIR/I*/*.md call MakeNoteTitle()
+
 " }}}
 " LaTeX (vimtex) {{{
 let g:tex_flavor = "latex"
