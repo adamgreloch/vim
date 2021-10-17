@@ -132,16 +132,16 @@ endif
 " Goyo breaks my custom styling so I packed them
 " into a function and invoke again on s:goyo_leave()
 function! CustomHi()
-    hi SpellBad cterm=bold ctermfg=167
-    hi VertSplit ctermfg=9 
-    hi CursorLine cterm=none ctermbg=234
-    hi CursorLineNr cterm=bold ctermbg=234
-    hi Statusline cterm=bold ctermfg=16 ctermbg=8
+    "hi SpellBad cterm=bold ctermfg=167
+    "hi VertSplit ctermfg=9 
+    "hi CursorLine cterm=none ctermbg=234
+    "hi CursorLineNr cterm=bold ctermbg=234
+    hi Statusline cterm=bold ctermfg=15 ctermbg=none
     hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
 endfunction
 
 if has('linux')
-    "call CustomHi()
+    call CustomHi()
     set nocursorline
 endif
 
@@ -478,6 +478,8 @@ autocmd BufWinEnter $JOURNALDIR/* call append(line('$'), '') | $pu!=strftime('%H
 " }}}
 " }}}
 " Misc {{{
+let g:indentLine_fileType = ['c', 'cpp', 'ocaml', 'vim']
+
 let g:GPGDefaultRecipients = ['zplhatesbananas@gmail.com']
 
 au FileType vim set fo-=c fo-=r fo-=o
