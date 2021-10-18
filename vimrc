@@ -100,7 +100,7 @@ Plug 'mbbill/undotree'
 Plug 'tpope/vim-surround'
 Plug 'Yggdroot/indentLine'
 
-if has('python')
+if has('python3')
     Plug 'SirVer/ultisnips'
 endif
 
@@ -326,7 +326,7 @@ au BufNewFile,BufRead *.cpp call ForCPP()
 au BufNewFile,BufRead *.cpp ALEDisable
 " }}}
 " OCaml {{{
-if has('python')
+if has('python3')
     let g:opamshare = substitute(system('opam var share'),'\n$','','''')
     execute "set rtp+=" . g:opamshare . "/merlin/vim"
     execute "helptags " . g:opamshare . "/merlin/vim/doc"
@@ -479,6 +479,7 @@ autocmd BufWinEnter $JOURNALDIR/* call append(line('$'), '') | $pu!=strftime('%H
 " }}}
 " Misc {{{
 let g:indentLine_fileType = ['c', 'cpp', 'ocaml', 'vim']
+let g:indentLine_char = '·'
 
 let g:GPGDefaultRecipients = ['zplhatesbananas@gmail.com']
 
