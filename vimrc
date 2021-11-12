@@ -15,13 +15,13 @@ set smartindent
 set nowrap
 set textwidth=79
 set numberwidth=4
-set laststatus=2
+set laststatus=1
 set ruler
 set diffopt+=vertical   " vertical diff (for fugitive)
 set splitbelow          " split everything below (for term)
 set foldmethod=marker
 set spellcapcheck=
-set relativenumber
+"set relativenumber
 set number
 "set cursorline
 set updatetime=50
@@ -81,19 +81,13 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'junegunn/fzf'
 Plug 'junegunn/fzf.vim'
-Plug 'reedes/vim-pencil'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/goyo.vim'
 Plug 'lervag/vimtex'
-Plug 'junegunn/limelight.vim'
-Plug 'easymotion/vim-easymotion'
-Plug 'tpope/vim-dispatch'
 Plug 'plasticboy/vim-markdown'
-Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'jamessan/vim-gnupg'
 Plug 'jsit/toast.vim'
-Plug 'davidhalter/jedi-vim'
 Plug 'dense-analysis/ale'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
@@ -156,10 +150,6 @@ augroup VCenterCursor
                 \ let &scrolloff=winheight(win_getid())/3
 augroup END
 
-" Set NERDtree arrows to -/+
-let g:NERDTreeDirArrowExpandable = '+'
-let g:NERDTreeDirArrowCollapsible = '-'
-
 " }}}
 " GVIM/Windows tweaks {{{
 if has("gui_running")
@@ -191,7 +181,7 @@ nnoremap <leader>q :q<cr>
 nnoremap <leader>b <C-^>
 nnoremap <leader>G :Git<cr>
 nnoremap <leader>B :Buffers<cr>
-nnoremap <silent><leader>r :set relativenumber!<cr>:set number!<cr>
+nnoremap <silent><leader>r :set number!<cr>
 nnoremap <leader>cl2 :set conceallevel=2<cr>
 nnoremap <leader>cl0 :set conceallevel=0<cr>
 
@@ -201,16 +191,9 @@ nnoremap <leader>ma :! maim -s -u -d 1 fig/
 
 inoremap <leader>w <esc>:w<cr>a
 
-map <leader>s <Plug>(easymotion-bd-w)
+"map <leader>s <Plug>(easymotion-bd-w)
 
 nnoremap <leader>ep :e ~/Pudlo/papiery/
-
-" limelight
-if has('linux')
-    nnoremap <silent><leader>L :Limelight!!<cr>:set cursorline!<cr>
-else
-    nnoremap <silent><leader>L :Limelight!! 0.8<cr>:set cursorline!<cr>
-endif
 
 " }}}
 " Fuzzy {{{
@@ -254,11 +237,6 @@ endfunction
 
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
-
-let g:limelight_bop = '^.*$'
-let g:limelight_eop = '\n'
-let g:limelight_paragraph_span = 3
-let g:limelight_conceal_ctermfg = 236
 " }}}
 " Mappings {{{
 " Toggle folding
@@ -300,16 +278,6 @@ nnoremap <C-p> :cprev<cr>z.
 vnoremap <C-r> "hy:%s/<C-r>h//g<left><left>
 " }}}
 " Coding {{{
-" vim-jedi {{{
-let g:jedi#auto_initialization = 0
-function! CallJedi()
-    setlocal omnifunc=jedi#completions
-    let g:jedi#max_doc_height = 50
-    nnoremap <silent> <buffer> <localleader>r :call jedi#rename()<cr>
-    nnoremap <silent> <buffer> K :call jedi#show_documentation()<cr>
-endfunction
-let g:jedi#show_call_signatures = 0
-" }}}
 " C/C++ {{{
 function! ForC()
     nnoremap <F9> :w<CR>:exec '!gcc -std=c11' shellescape(@%, 1) '&& ./a.out'<CR>
@@ -331,24 +299,6 @@ if has('python3')
     execute "set rtp+=" . g:opamshare . "/merlin/vim"
     execute "helptags " . g:opamshare . "/merlin/vim/doc"
 endif
-" }}}
-" Python {{{
-function! ForPython()
-    " PEP 8
-    set tabstop=4
-    set softtabstop=4
-    set shiftwidth=4
-    set textwidth=79
-    set expandtab
-    set autoindent
-    set fileformat=unix
-    autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
-    autocmd FileType python imap <buffer> <F9> <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
-endfunction
-
-au BufNewFile,BufRead *.py :call ForPython()
-au BufNewFile,BufRead *.py :call CallJedi()
-
 " }}}
 " }}}
 " Text {{{
@@ -374,29 +324,10 @@ endfor
 "    nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
 "endif
 " }}}
-" Pencil {{{
-" Suspend autoformat during the next Insert
-let g:pencil#map#suspend_af = 'K'
-let g:pencil#conceallevel = 0
-
-function! Prose()
-    call pencil#init({'wrap': 'hard', 'textwidth': '79'})
-    nnoremap <buffer> k gk
-    nnoremap <buffer> j gj
-    setlocal statusline=%t\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %{wordcount().words}w\ %=\ %P%)
-    set spelllang=pl
-    set nospell
-endfunction
-
-"autocmd FileType markdown,md,txt  call Prose()
-"autocmd BufEnter *.txt,*.mdx           call Prose()
-autocmd BufEnter *.md                       set ft=markdown
-"autocmd FileType tex                        call pencil#init({'wrap': 'soft'})
-autocmd BufEnter *.mdx inoremap <buffer><silent><leader>p <XA href="<C-O>"+p"></XA><C-O>F<
-"autocmd BufEnter *.mdx nnoremap <buffer><silent><leader>p c<XA href="<C-O>"+p><C-O>p</XA>
-
-" }}}
 " Markdown {{{
+autocmd BufEnter *.md                       set ft=markdown
+autocmd BufEnter *.mdx inoremap <buffer><silent><leader>p <XA href="<C-O>"+p"></XA><C-O>F<
+
 let g:vim_markdown_folding_disabled = 1
 
 " no more auto bullets and indentation
