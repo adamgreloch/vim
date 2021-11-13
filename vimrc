@@ -4,7 +4,6 @@ autocmd!
 
 syntax on
 
-set runtimepath=$HOME/.vim,$XDG_CONFIG_HOME/vim,$VIM,$VIMRUNTIME,$XDG_CONFIG_HOME/vim/after
 set encoding=utf8
 set mouse=a
 set backspace=2         " make backspace work like most other programs
@@ -21,10 +20,10 @@ set diffopt+=vertical   " vertical diff (for fugitive)
 set splitbelow          " split everything below (for term)
 set foldmethod=marker
 set spellcapcheck=
-"set relativenumber
+set relativenumber
 set number
 "set cursorline
-set updatetime=50
+"set updatetime=50
 set fileformat=unix
 
 " Tabs to spaces
@@ -79,15 +78,14 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'junegunn/fzf'
-Plug 'junegunn/fzf.vim'
+"Plug 'junegunn/fzf'
+"Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/goyo.vim'
-Plug 'lervag/vimtex'
-Plug 'plasticboy/vim-markdown'
+Plug 'lervag/vimtex', { 'for': 'tex' }
+Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'honza/vim-snippets'
 Plug 'jamessan/vim-gnupg'
-Plug 'jsit/toast.vim'
 Plug 'dense-analysis/ale'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
@@ -153,6 +151,8 @@ augroup END
 " }}}
 " GVIM/Windows tweaks {{{
 if has("gui_running")
+    " TODO: is setting rtp necessary?
+    set runtimepath=$HOME/.vim,$XDG_CONFIG_HOME/vim,$VIM,$VIMRUNTIME,$XDG_CONFIG_HOME/vim/after
     set langmenu=en_US
     let $LANG = 'en_US'
     source $VIMRUNTIME/delmenu.vim
@@ -359,8 +359,8 @@ autocmd BufNewFile $NOTESDIR/I*/*.md call MakeNoteTitle()
 " LaTeX (vimtex) {{{
 let g:tex_flavor = "latex"
 let g:vimtex_motion_matchparen = 0
-let g:vimtex_indent_enabled = 0
-let g:vimtex_fold_enabled = 1
+"let g:vimtex_indent_enabled = 0
+"let g:vimtex_fold_enabled = 1
 let g:vimtex_matchparen_enabled = 0
 let g:vimtex_view_forward_search_on_start = 0
 let g:ale_linters = {
