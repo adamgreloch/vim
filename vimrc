@@ -61,7 +61,7 @@ language en_US.utf8
 
 if has('linux')
     language time pl_PL.utf8
-    if !exists("g.ubuntu")
+    if !exists("g:ubuntu")
         let $PDFVIEWER = "zathura"
         let g:vimtex_view_method = 'zathura'
     endif
@@ -109,7 +109,7 @@ if has('win32')
     Plug 'morhetz/gruvbox'
 else
     " Linux/macOS
-    if exists("g.ubuntu")
+    if exists("g:ubuntu")
         Plug 'nanotech/jellybeans.vim'
     else
         Plug 'noahfrederick/vim-noctu'
@@ -127,7 +127,7 @@ let g:airline#extensions#whitespace#enabled = 0
 
 " Set theme
 if has('linux')
-    if exists("g.ubuntu")
+    if exists("g:ubuntu")
         set t_Co=256
         set termguicolors
         colorscheme jellybeans
@@ -151,7 +151,7 @@ function! CustomHi()
     hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
 endfunction
 
-if has('linux') && !exists("g.ubuntu")
+if has('linux') && !exists("g:ubuntu")
     call CustomHi()
 endif
 
