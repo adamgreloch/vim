@@ -91,7 +91,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/goyo.vim'
 Plug 'lervag/vimtex'
-Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
+Plug 'plasticboy/vim-markdown',
 Plug 'honza/vim-snippets'
 Plug 'jamessan/vim-gnupg'
 Plug 'dense-analysis/ale'
@@ -99,7 +99,6 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-surround'
 Plug 'Yggdroot/indentLine'
-Plug 'nanotech/jellybeans.vim'
 
 if has('python3')
     Plug 'SirVer/ultisnips'
@@ -110,7 +109,11 @@ if has('win32')
     Plug 'morhetz/gruvbox'
 else
     " Linux/macOS
-    Plug 'noahfrederick/vim-noctu'
+    if exists("g.ubuntu")
+        Plug 'nanotech/jellybeans.vim'
+    else
+        Plug 'noahfrederick/vim-noctu'
+    endif
 endif
 
 call plug#end()
@@ -124,7 +127,7 @@ let g:airline#extensions#whitespace#enabled = 0
 
 " Set theme
 if has('linux')
-    if !exists("g.ubuntu")
+    if exists("g.ubuntu")
         set t_Co=256
         set termguicolors
         colorscheme jellybeans
