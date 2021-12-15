@@ -22,9 +22,10 @@ set foldmethod=marker
 set spellcapcheck=
 set relativenumber
 set number
-"set cursorline
 "set updatetime=50
 set fileformat=unix
+set title
+set titlestring=%t
 
 " Tabs to spaces
 set tabstop=4
@@ -46,6 +47,10 @@ if empty(glob(expand("$HOME") . "/.vim/tmp"))
     silent !mkdir -p ~/.vim/tmp
 endif
 
+if expand("$XDG_SESSION_DESKTOP") == "ubuntu-xorg"
+    let g:ubuntu = 1
+endif
+
 set backup
 set backupdir=~/.vim/tmp//
 set directory=~/.vim/tmp//
@@ -56,7 +61,10 @@ language en_US.utf8
 
 if has('linux')
     language time pl_PL.utf8
-    let $PDFVIEWER = "zathura"
+    if !exists("g.ubuntu")
+        let $PDFVIEWER = "zathura"
+        let g:vimtex_view_method = 'zathura'
+    endif
 endif
 
 if has('win32')
@@ -68,7 +76,7 @@ endif
 if empty(glob(expand("$HOME") . "/.vim/autoload/plug.vim"))
     if has('win32')
         iwr -useb https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim |`
-    ni $HOME/.vim/autoload/plug.vim -Force
+        ni $HOME/.vim/autoload/plug.vim -Force
     else
         silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
             \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
@@ -78,11 +86,11 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-"Plug 'junegunn/fzf'
-"Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf'
+Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/goyo.vim'
-Plug 'lervag/vimtex', { 'for': 'tex' }
+Plug 'lervag/vimtex'
 Plug 'plasticboy/vim-markdown', { 'for': 'markdown' }
 Plug 'honza/vim-snippets'
 Plug 'jamessan/vim-gnupg'
@@ -91,6 +99,7 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-surround'
 Plug 'Yggdroot/indentLine'
+Plug 'nanotech/jellybeans.vim'
 
 if has('python3')
     Plug 'SirVer/ultisnips'
@@ -110,11 +119,18 @@ filetype plugin indent on
 " Look and feel {{{
 set listchars=tab:▸\ ,eol:¬
 
+let g:airline_symbols_ascii = 1
+let g:airline#extensions#whitespace#enabled = 0
+
 " Set theme
 if has('linux')
-    set t_Co=16
-    colorscheme noctu
-    "colorscheme desert
+    if !exists("g.ubuntu")
+        set t_Co=256
+        set termguicolors
+        colorscheme jellybeans
+    else
+        colorscheme noctu
+    endif
 else
     let g:gruvbox_italic = 0
     colorscheme gruvbox
@@ -125,16 +141,15 @@ endif
 " into a function and invoke again on s:goyo_leave()
 function! CustomHi()
     "hi SpellBad cterm=bold ctermfg=167
-    "hi VertSplit ctermfg=9 
+    "hi VertSplit ctermfg=9
     "hi CursorLine cterm=none ctermbg=234
     "hi CursorLineNr cterm=bold ctermbg=234
     hi Statusline cterm=bold ctermfg=15 ctermbg=none
     hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
 endfunction
 
-if has('linux')
+if has('linux') && !exists("g.ubuntu")
     call CustomHi()
-    set nocursorline
 endif
 
 " Disable bells
@@ -263,10 +278,6 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
-" Brackets
-inoremap {<CR> {<CR>}<ESC>O
-inoremap {;<CR> {<CR>};<ESC>O
-
 " NGrep (connermcd)
 command! -nargs=1 Ngrep vimgrep "<args>" ~/Pudlo/notatki/**/*.md
 nnoremap <leader>[ :Ngrep 
@@ -325,7 +336,6 @@ endfor
 "endif
 " }}}
 " Markdown {{{
-autocmd BufEnter *.md                       set ft=markdown
 autocmd BufEnter *.mdx inoremap <buffer><silent><leader>p <XA href="<C-O>"+p"></XA><C-O>F<
 
 let g:vim_markdown_folding_disabled = 1
@@ -344,7 +354,7 @@ let g:vim_markdown_new_list_item_indent = 0
 
 autocmd FileType markdown call NoIndent()
 autocmd FileType markdown setl textwidth=79
-autocmd BufEnter * set fo-=n fo-=r fo-=q
+"autocmd BufEnter * set fo-=n fo-=r fo-=q
 
 " Note-taking for lectures
 function! MakeNoteTitle()
@@ -357,7 +367,6 @@ autocmd BufNewFile $NOTESDIR/I*/*.md call MakeNoteTitle()
 
 " }}}
 " LaTeX (vimtex) {{{
-let g:tex_flavor = "latex"
 let g:vimtex_motion_matchparen = 0
 "let g:vimtex_indent_enabled = 0
 "let g:vimtex_fold_enabled = 1
@@ -366,10 +375,18 @@ let g:vimtex_view_forward_search_on_start = 0
 let g:ale_linters = {
 \   'tex': [],
 \}
+let g:ale_open_list = 1
+let g:ale_set_highlights = 0
+let g:ale_lint_delay = 0
+let g:ale_lint_on_text_changed = 1
+let g:ale_maximum_file_size = 424242
 
-if has('linux')
-    let g:vimtex_view_method = 'zathura'
-endif
+" Close the loclist window automatically when the buffer is closed
+augroup CloseLoclistWindowGroup
+    autocmd!
+    autocmd QuitPre * if empty(&buftype) | lclose | endif
+augroup END
+
 
 au BufNewFile,BufRead *.tikz set filetype=tex
 
