@@ -282,7 +282,8 @@ nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
 " NGrep (connermcd)
-command! -nargs=1 Ngrep vimgrep "<args>" ~/Pudlo/notatki/**/*.md
+"command! -nargs=1 Ngrep vimgrep "<args>" ~/Pudlo/notatki/**/*.md
+command! -nargs=1 Ngrep vimgrep "<args>"../../**/*
 nnoremap <leader>[ :Ngrep 
 
 nnoremap <C-n> :cnext<cr>z.
