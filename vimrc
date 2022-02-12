@@ -98,7 +98,6 @@ Plug 'dense-analysis/ale'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-surround'
-Plug 'Yggdroot/indentLine'
 
 if has('python3')
     Plug 'SirVer/ultisnips'
@@ -199,7 +198,7 @@ nnoremap <leader>q :q<cr>
 nnoremap <leader>b <C-^>
 nnoremap <leader>G :Git<cr>
 nnoremap <leader>B :Buffers<cr>
-nnoremap <silent><leader>r :set number!<cr>
+nnoremap <silent><leader>r :set number! relativenumber!<cr>
 nnoremap <leader>cl2 :set conceallevel=2<cr>
 nnoremap <leader>cl0 :set conceallevel=0<cr>
 
@@ -309,11 +308,11 @@ au BufNewFile,BufRead *.cpp call ForCPP()
 au BufNewFile,BufRead *.cpp ALEDisable
 " }}}
 " OCaml {{{
-if has('python3')
-    let g:opamshare = substitute(system('opam var share'),'\n$','','''')
-    execute "set rtp+=" . g:opamshare . "/merlin/vim"
-    execute "helptags " . g:opamshare . "/merlin/vim/doc"
-endif
+"if has('python3')
+"    let g:opamshare = substitute(system('opam var share'),'\n$','','''')
+"    execute "set rtp+=" . g:opamshare . "/merlin/vim"
+"    execute "helptags " . g:opamshare . "/merlin/vim/doc"
+"endif
 " }}}
 " }}}
 " Text {{{
@@ -330,9 +329,11 @@ endfor
 "let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
 "let g:pandoc#modules#enabled = ["command"]
 "let g:pandoc#command#latex_engine = "pdflatex"
-"
+
 "nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Pudlo/papiery/defaults.latex"<cr>
-"
+nnoremap <expr> <silent> <leader>cc ":!pandoc ".expand("%:p:r").".md -o ".expand("%:p:r").".pdf --from markdown --template eisvogel --listings<cr>"
+nnoremap <expr> <leader>oo ":!xdg-open ".expand("%:p:r").".pdf<cr><cr>"
+
 "if has("linux")
 "    nnoremap <expr> <leader>oo ":!".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr><cr>"
 "else
@@ -340,7 +341,7 @@ endfor
 "endif
 " }}}
 " Markdown {{{
-autocmd BufEnter *.mdx inoremap <buffer><silent><leader>p <XA href="<C-O>"+p"></XA><C-O>F<
+"autocmd BufEnter *.mdx inoremap <buffer><silent><leader>p <XA href="<C-O>"+p"></XA><C-O>F<
 
 let g:vim_markdown_folding_disabled = 1
 
@@ -380,8 +381,9 @@ let g:ale_linters = {
 \   'tex': [],
 \}
 let g:ale_open_list = 1
+let g:ale_list_window_size = 5
 let g:ale_set_highlights = 0
-let g:ale_lint_delay = 0
+let g:ale_lint_delay = 10
 let g:ale_lint_on_text_changed = 1
 let g:ale_maximum_file_size = 424242
 
@@ -427,6 +429,19 @@ autocmd BufNewFile  $JOURNALDIR/* $pu!=strftime('%A, %d.%m.%y')
 autocmd BufWinEnter $JOURNALDIR/* setlocal tw=79 nowrap
 autocmd BufWinEnter $JOURNALDIR/* call append(line('$'), '') | $pu!=strftime('%H:%M') | call append(line('$'), '') | normal GA
 
+" }}}
+" Diacritics {{{
+" Remove diacritical signs from characters in specified range of lines.
+" Examples of characters replaced: á -> a, ç -> c, Á -> A, Ç -> C.
+function! s:RemoveDiacritics(line1, line2)
+  let diacs = 'áâãàąçćéêęíłńóôõśüúżź'  " lowercase diacritical signs
+  let repls = 'aaaaacceeeilnooosuuzz'  " corresponding replacements
+  let diacs .= toupper(diacs)
+  let repls .= toupper(repls)
+  let all = join(getline(a:line1, a:line2), "\n")
+  call setline(a:line1, split(tr(all, diacs, repls), "\n"))
+endfunction
+command! -range=% RemoveDiacritics call s:RemoveDiacritics(<line1>, <line2>)
 " }}}
 " }}}
 " Misc {{{
