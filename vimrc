@@ -98,6 +98,7 @@ Plug 'dense-analysis/ale'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-surround'
+Plug 'nanotech/jellybeans.vim'
 
 if has('python3')
     Plug 'SirVer/ultisnips'
@@ -126,13 +127,18 @@ let g:airline#extensions#whitespace#enabled = 0
 
 " Set theme
 if has('linux')
-    if exists("g:ubuntu")
-        set t_Co=256
-        set termguicolors
-        colorscheme jellybeans
-    else
-        colorscheme noctu
-    endif
+    set t_Co=256
+    set termguicolors
+    colorscheme jellybeans
+    "if exists("g:ubuntu")
+    "    set t_Co=256
+    "    set termguicolors
+    "    colorscheme jellybeans
+    "else
+    "    "colorscheme noctu
+    "    set termguicolors
+    "    colorscheme murphy
+    "endif
 else
     let g:gruvbox_italic = 0
     colorscheme gruvbox
@@ -148,10 +154,11 @@ function! CustomHi()
     "hi CursorLineNr cterm=bold ctermbg=234
     hi Statusline cterm=bold ctermfg=15 ctermbg=none
     hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
+    hi Folded guibg=darkblue
 endfunction
 
 if has('linux') && !exists("g:ubuntu")
-    call CustomHi()
+    "call CustomHi()
 endif
 
 " Disable bells
