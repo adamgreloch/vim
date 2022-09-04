@@ -51,6 +51,14 @@ if expand("$XDG_SESSION_DESKTOP") == "ubuntu-xorg"
     let g:ubuntu = 1
 endif
 
+" Look for my NixOS devices
+if match(expand("$HOST"), "nixos") == 0
+    let g:nixos = 1
+    let $VIMDIR = "~/.config/nixpkgs/programs/vim"
+else
+    let $VIMDIR = "~/.vim"
+endif
+
 set backup
 set backupdir=~/.vim/tmp//
 set directory=~/.vim/tmp//
@@ -80,7 +88,7 @@ if empty(glob(expand("$HOME") . "/.vim/autoload/plug.vim"))
     else
         silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
             \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-        autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+        autocmd VimEnter * PlugInstall --sync | source $VIMDIR/vimrc
     endif
 endif
 
@@ -94,7 +102,6 @@ Plug 'lervag/vimtex'
 Plug 'plasticboy/vim-markdown',
 Plug 'honza/vim-snippets'
 Plug 'jamessan/vim-gnupg'
-Plug 'dense-analysis/ale'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-surround'
@@ -128,8 +135,8 @@ let g:airline#extensions#whitespace#enabled = 0
 " Set theme
 if has('linux')
     set t_Co=256
-    set termguicolors
-    colorscheme jellybeans
+    set notermguicolors
+    colorscheme noctu
     "if exists("g:ubuntu")
     "    set t_Co=256
     "    set termguicolors
@@ -197,7 +204,7 @@ endif
 nnoremap <leader>u :UndotreeShow<cr>
 nnoremap <leader>w :w<cr>
 nnoremap <leader>e :w!<cr>:e %:h<cr>
-nnoremap <leader>ov :e ~/.vim/vimrc<cr>
+nnoremap <leader>ov :e $VIMDIR/vimrc<cr>
 nnoremap <leader>P "+p
 nnoremap <leader>Y "+y
 nnoremap <silent><leader>g :Goyo<cr>
@@ -242,19 +249,11 @@ let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 " }}}
 " Zen {{{
 function! s:goyo_enter()
-    if has("linux")
-        silent !tmux set status off
-        silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
-    endif
     set guicursor+=a:blinkon0
     set noshowmode
 endfunction
 
 function! s:goyo_leave()
-    if has("linux")
-        silent !tmux set status on
-        silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
-    endif
     call CustomHi()
     set showmode
 endfunction
@@ -474,3 +473,9 @@ augroup BWCCreateDir
     autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
 augroup END
 " }}}
+" vim9 {{{
+if v:version >= 900
+    set wildoptions=pum
+    set autoshelldir
+endif
+"}}}
