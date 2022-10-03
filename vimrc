@@ -303,15 +303,15 @@ function! ForC()
     nnoremap <F9> :w<CR>:exec '!gcc -std=c11' shellescape(@%, 1) '&& ./a.out'<CR>
 endfunction
 
-au BufNewFile,BufRead *.c call ForC()
-au BufNewFile,BufRead *.c ALEDisable
+"au BufNewFile,BufRead *.c call ForC()
+"au BufNewFile,BufRead *.c ALEDisable
 
 function! ForCPP()
-    nnoremap <F9> :w<CR>:exec '!g++ -std=c++11' shellescape(@%, 1) '&& ./a.out'<CR>
+    nnoremap <F9> :w<CR>:exec '!gcc -std=c++11' shellescape(@%, 1) '&& ./a.out'<CR>
 endfunction
 
-au BufNewFile,BufRead *.cpp call ForCPP()
-au BufNewFile,BufRead *.cpp ALEDisable
+"au BufNewFile,BufRead *.cpp call ForCPP()
+"au BufNewFile,BufRead *.cpp ALEDisable
 " }}}
 " OCaml {{{
 "if has('python3')
