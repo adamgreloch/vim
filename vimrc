@@ -364,7 +364,7 @@ let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 
 autocmd FileType markdown call NoIndent()
-autocmd FileType markdown setl textwidth=79
+autocmd FileType markdown setl textwidth=79 shiftwidth=2
 "autocmd BufEnter * set fo-=n fo-=r fo-=q
 
 " Note-taking for lectures
