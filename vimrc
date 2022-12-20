@@ -28,8 +28,8 @@ set title
 set titlestring=%t
 
 " Tabs to spaces
-set tabstop=4
-set shiftwidth=4
+set tabstop=2
+set shiftwidth=2
 set expandtab
 
 " Search
@@ -106,6 +106,8 @@ Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-surround'
 Plug 'nanotech/jellybeans.vim'
+"Plug 'ycm-core/YouCompleteMe'
+Plug 'vim-scripts/dbext.vim'
 
 if has('python3')
     Plug 'SirVer/ultisnips'
@@ -116,11 +118,11 @@ if has('win32')
     Plug 'morhetz/gruvbox'
 else
     " Linux/macOS
-    if exists("g:ubuntu")
+    "if exists("g:ubuntu")
         Plug 'nanotech/jellybeans.vim'
-    else
-        Plug 'noahfrederick/vim-noctu'
-    endif
+    "else
+    "    Plug 'noahfrederick/vim-noctu'
+    "endif
 endif
 
 call plug#end()
@@ -136,7 +138,8 @@ let g:airline#extensions#whitespace#enabled = 0
 if has('linux')
     set t_Co=256
     set notermguicolors
-    colorscheme noctu
+    "colorscheme noctu
+    colorscheme jellybeans
     "if exists("g:ubuntu")
     "    set t_Co=256
     "    set termguicolors
@@ -271,10 +274,10 @@ nnoremap Q <Nop>
 " Cursor movement
 nnoremap j gj
 nnoremap k gk
-inoremap <C-k> <C-o>gk
-inoremap <C-h> <Left>
-inoremap <C-l> <Right>
-inoremap <C-j> <C-o>gj
+"inoremap <C-k> <C-o>gk
+"inoremap <C-h> <Left>
+"inoremap <C-l> <Right>
+"inoremap <C-j> <C-o>gj
 
 " Extremes
 nnoremap H ^
@@ -472,6 +475,9 @@ augroup BWCCreateDir
     autocmd!
     autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
 augroup END
+
+let g:UltiSnipsSnippetDirectories = ['~/git/nixos-config/nixpkgs/programs/vim/ultisnips']
+
 " }}}
 " vim9 {{{
 if v:version >= 900
