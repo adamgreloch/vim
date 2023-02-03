@@ -13,6 +13,7 @@ set guioptions=cgt
 set smartindent
 set nowrap
 set textwidth=79
+set colorcolumn=81
 set numberwidth=4
 set laststatus=1
 set ruler
@@ -35,6 +36,7 @@ set expandtab
 " Search
 set ignorecase
 set incsearch
+set smartcase
 
 augroup vimrc-incsearch-highlight
     autocmd!
@@ -99,15 +101,17 @@ Plug 'junegunn/fzf.vim'
 Plug 'tpope/vim-fugitive'
 Plug 'junegunn/goyo.vim'
 Plug 'lervag/vimtex'
-Plug 'plasticboy/vim-markdown',
+Plug 'preservim/vim-markdown'
 Plug 'honza/vim-snippets'
 Plug 'jamessan/vim-gnupg'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-surround'
 Plug 'nanotech/jellybeans.vim'
-"Plug 'ycm-core/YouCompleteMe'
-Plug 'vim-scripts/dbext.vim'
+Plug 'gruvbox-community/gruvbox'
+Plug 'dense-analysis/ale'
+Plug 'jiangmiao/auto-pairs'
+Plug 'sbdchd/neoformat'
 
 if has('python3')
     Plug 'SirVer/ultisnips'
@@ -137,9 +141,17 @@ let g:airline#extensions#whitespace#enabled = 0
 " Set theme
 if has('linux')
     set t_Co=256
-    set notermguicolors
     "colorscheme noctu
     colorscheme jellybeans
+    if !has('gui_running') && &term =~ '^\%(screen\|tmux\)'
+      let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+      let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    endif
+    set termguicolors
+    "let g:gruvbox_italic = 0
+    "colorscheme gruvbox
+    "hi SpellBad cterm=underline ctermfg=red ctermbg=0
+    "set background=dark
     "if exists("g:ubuntu")
     "    set t_Co=256
     "    set termguicolors
@@ -314,7 +326,7 @@ function! ForCPP()
 endfunction
 
 "au BufNewFile,BufRead *.cpp call ForCPP()
-"au BufNewFile,BufRead *.cpp ALEDisable
+au BufNewFile,BufRead *.cpp setl sw=2
 " }}}
 " OCaml {{{
 "if has('python3')
@@ -386,15 +398,6 @@ let g:vimtex_motion_matchparen = 0
 "let g:vimtex_fold_enabled = 1
 let g:vimtex_matchparen_enabled = 0
 let g:vimtex_view_forward_search_on_start = 0
-let g:ale_linters = {
-\   'tex': [],
-\}
-let g:ale_open_list = 1
-let g:ale_list_window_size = 5
-let g:ale_set_highlights = 0
-let g:ale_lint_delay = 10
-let g:ale_lint_on_text_changed = 1
-let g:ale_maximum_file_size = 424242
 
 " Close the loclist window automatically when the buffer is closed
 augroup CloseLoclistWindowGroup
@@ -485,3 +488,16 @@ if v:version >= 900
     set autoshelldir
 endif
 "}}}
+" ale {{{
+let g:ale_linters = {
+  \   'tex': []
+  \}
+let g:ale_open_list = 1
+let g:ale_list_window_size = 5
+let g:ale_set_highlights = 0
+let g:ale_lint_delay = 10
+let g:ale_lint_on_text_changed = 1
+let g:ale_maximum_file_size = 424242
+let g:ale_completion_enabled = 1
+let g:ale_virtualtext_cursor = 1
+" }}}
