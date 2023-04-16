@@ -13,9 +13,8 @@ set guioptions=cgt
 set smartindent
 set nowrap
 set textwidth=79
-set colorcolumn=81
 set numberwidth=4
-set laststatus=1
+set laststatus=2
 set ruler
 set diffopt+=vertical   " vertical diff (for fugitive)
 set splitbelow          " split everything below (for term)
@@ -23,7 +22,6 @@ set foldmethod=marker
 set spellcapcheck=
 set relativenumber
 set number
-"set updatetime=50
 set fileformat=unix
 set title
 set titlestring=%t
@@ -107,26 +105,11 @@ Plug 'jamessan/vim-gnupg'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-surround'
-Plug 'nanotech/jellybeans.vim'
-Plug 'gruvbox-community/gruvbox'
-Plug 'dense-analysis/ale'
 Plug 'jiangmiao/auto-pairs'
-Plug 'sbdchd/neoformat'
+Plug 'altercation/vim-colors-solarized'
 
 if has('python3')
     Plug 'SirVer/ultisnips'
-endif
-
-if has('win32')
-    Plug 'gruvbox-community/gruvbox'
-    Plug 'morhetz/gruvbox'
-else
-    " Linux/macOS
-    "if exists("g:ubuntu")
-        Plug 'nanotech/jellybeans.vim'
-    "else
-    "    Plug 'noahfrederick/vim-noctu'
-    "endif
 endif
 
 call plug#end()
@@ -135,52 +118,17 @@ filetype plugin indent on
 " Look and feel {{{
 set listchars=tab:▸\ ,eol:¬
 
-let g:airline_symbols_ascii = 1
-let g:airline#extensions#whitespace#enabled = 0
+set t_Co=256
+colorscheme solarized
+set background=dark
+call togglebg#map("<F5>")
 
-" Set theme
 if has('linux')
-    set t_Co=256
-    "colorscheme noctu
-    colorscheme jellybeans
     if !has('gui_running') && &term =~ '^\%(screen\|tmux\)'
       let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
       let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
     endif
-    set termguicolors
-    "let g:gruvbox_italic = 0
-    "colorscheme gruvbox
-    "hi SpellBad cterm=underline ctermfg=red ctermbg=0
-    "set background=dark
-    "if exists("g:ubuntu")
-    "    set t_Co=256
-    "    set termguicolors
-    "    colorscheme jellybeans
-    "else
-    "    "colorscheme noctu
-    "    set termguicolors
-    "    colorscheme murphy
-    "endif
-else
-    let g:gruvbox_italic = 0
-    colorscheme gruvbox
-    set background=dark
-endif
-
-" Goyo breaks my custom styling so I packed them
-" into a function and invoke again on s:goyo_leave()
-function! CustomHi()
-    "hi SpellBad cterm=bold ctermfg=167
-    "hi VertSplit ctermfg=9
-    "hi CursorLine cterm=none ctermbg=234
-    "hi CursorLineNr cterm=bold ctermbg=234
-    hi Statusline cterm=bold ctermfg=15 ctermbg=none
-    hi WildMenu ctermfg=12 ctermbg=0 cterm=bold
-    hi Folded guibg=darkblue
-endfunction
-
-if has('linux') && !exists("g:ubuntu")
-    "call CustomHi()
+    set notermguicolors
 endif
 
 " Disable bells
@@ -313,28 +261,8 @@ nnoremap <C-p> :cprev<cr>z.
 vnoremap <C-r> "hy:%s/<C-r>h//g<left><left>
 " }}}
 " Coding {{{
-" C/C++ {{{
-function! ForC()
-    nnoremap <F9> :w<CR>:exec '!gcc -std=c11' shellescape(@%, 1) '&& ./a.out'<CR>
-endfunction
-
-"au BufNewFile,BufRead *.c call ForC()
-"au BufNewFile,BufRead *.c ALEDisable
-
-function! ForCPP()
-    nnoremap <F9> :w<CR>:exec '!gcc -std=c++11' shellescape(@%, 1) '&& ./a.out'<CR>
-endfunction
-
-"au BufNewFile,BufRead *.cpp call ForCPP()
 au BufNewFile,BufRead *.cpp setl sw=2
-" }}}
-" OCaml {{{
-"if has('python3')
-"    let g:opamshare = substitute(system('opam var share'),'\n$','','''')
-"    execute "set rtp+=" . g:opamshare . "/merlin/vim"
-"    execute "helptags " . g:opamshare . "/merlin/vim/doc"
-"endif
-" }}}
+au BufNewFile,BufRead *.asm set ft=nasm sw=8 ts=8 tw=90
 " }}}
 " Text {{{
 " Spellcheck {{{
@@ -346,24 +274,10 @@ for d in glob('~/.vim/spell/*.add', 1, 1)
 endfor
 " }}}
 " pandoc {{{
-"TODO: use external pandoc
-"let g:pandoc#modules#enabled = ["command", "spell", "hypertext", "metadata", "toc"]
-"let g:pandoc#modules#enabled = ["command"]
-"let g:pandoc#command#latex_engine = "pdflatex"
-
-"nnoremap <silent> <leader>cc :Pandoc pdf --template="~/Pudlo/papiery/defaults.latex"<cr>
 nnoremap <expr> <silent> <leader>cc ":!pandoc ".expand("%:p:r").".md -o ".expand("%:p:r").".pdf --from markdown --template eisvogel --listings<cr>"
 nnoremap <expr> <leader>oo ":!xdg-open ".expand("%:p:r").".pdf<cr><cr>"
-
-"if has("linux")
-"    nnoremap <expr> <leader>oo ":!".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr><cr>"
-"else
-"    nnoremap <expr> <leader>oo ":Start! ".expand("$PDFVIEWER")." ".expand("%:p:r").".pdf<cr>"
-"endif
 " }}}
 " Markdown {{{
-"autocmd BufEnter *.mdx inoremap <buffer><silent><leader>p <XA href="<C-O>"+p"></XA><C-O>F<
-
 let g:vim_markdown_folding_disabled = 1
 
 " no more auto bullets and indentation
@@ -374,23 +288,11 @@ function! NoIndent()
 endfunction
 
 " https://vi.stackexchange.com/questions/12000/prevent-neovim-from-breaking-one-markdown-bullet-point-into-multiple-ones
-
 let g:vim_markdown_auto_insert_bullets = 0
 let g:vim_markdown_new_list_item_indent = 0
 
 autocmd FileType markdown call NoIndent()
 autocmd FileType markdown setl textwidth=79 shiftwidth=2
-"autocmd BufEnter * set fo-=n fo-=r fo-=q
-
-" Note-taking for lectures
-function! MakeNoteTitle()
-    let title = "# ".expand('%:t:r')."\n"."> Data: ".strftime('%d-%m-%y')."\n"."\n"
-    pu!=title
-    normal GA
-endfunction
-     
-autocmd BufNewFile $NOTESDIR/I*/*.md call MakeNoteTitle()
-
 " }}}
 " LaTeX (vimtex) {{{
 let g:vimtex_motion_matchparen = 0
@@ -457,9 +359,6 @@ command! -range=% RemoveDiacritics call s:RemoveDiacritics(<line1>, <line2>)
 " }}}
 " }}}
 " Misc {{{
-let g:indentLine_fileType = ['c', 'cpp', 'ocaml', 'vim']
-let g:indentLine_char = '·'
-
 let g:GPGDefaultRecipients = ['zplhatesbananas@gmail.com']
 
 au FileType vim set fo-=c fo-=r fo-=o
@@ -479,25 +378,10 @@ augroup BWCCreateDir
     autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
 augroup END
 
-let g:UltiSnipsSnippetDirectories = ['~/git/nixos-config/nixpkgs/programs/vim/ultisnips']
+let g:UltiSnipsSnippetDirectories = ['~/.vim/ultisnips']
 
-" }}}
-" vim9 {{{
 if v:version >= 900
     set wildoptions=pum
     set autoshelldir
 endif
 "}}}
-" ale {{{
-let g:ale_linters = {
-  \   'tex': []
-  \}
-let g:ale_open_list = 1
-let g:ale_list_window_size = 5
-let g:ale_set_highlights = 0
-let g:ale_lint_delay = 10
-let g:ale_lint_on_text_changed = 1
-let g:ale_maximum_file_size = 424242
-let g:ale_completion_enabled = 1
-let g:ale_virtualtext_cursor = 1
-" }}}
