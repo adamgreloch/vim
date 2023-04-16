@@ -26,6 +26,9 @@ set fileformat=unix
 set title
 set titlestring=%t
 
+" don't insert comment leader after I: <Enter> or N: o/O
+autocmd BufEnter * set formatoptions-=ro
+
 " Tabs to spaces
 set tabstop=2
 set shiftwidth=2
@@ -47,17 +50,7 @@ if empty(glob(expand("$HOME") . "/.vim/tmp"))
     silent !mkdir -p ~/.vim/tmp
 endif
 
-if expand("$XDG_SESSION_DESKTOP") == "ubuntu-xorg"
-    let g:ubuntu = 1
-endif
-
-" Look for my NixOS devices
-if match(expand("$HOST"), "nixos") == 0
-    let g:nixos = 1
-    let $VIMDIR = "~/.config/nixpkgs/programs/vim"
-else
-    let $VIMDIR = "~/.vim"
-endif
+let $VIMDIR = "~/.vim""
 
 set backup
 set backupdir=~/.vim/tmp//
@@ -122,14 +115,7 @@ set t_Co=256
 colorscheme solarized
 set background=dark
 call togglebg#map("<F5>")
-
-if has('linux')
-    if !has('gui_running') && &term =~ '^\%(screen\|tmux\)'
-      let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-      let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-    endif
-    set notermguicolors
-endif
+set notermguicolors
 
 " Disable bells
 set noerrorbells visualbell t_vb=
@@ -137,8 +123,8 @@ autocmd GUIEnter * set visualbell t_vb=
 
 " Set scrolloff margin to 33% of winheight
 augroup VCenterCursor
-    au!
-    au BufEnter,WinEnter,WinNew,VimResized *,*.*
+    autocmd!
+    autocmd BufEnter,WinEnter,WinNew,VimResized *,*.*
                 \ let &scrolloff=winheight(win_getid())/3
 augroup END
 
@@ -221,6 +207,8 @@ function! s:goyo_leave()
     set showmode
 endfunction
 
+let g:goyo_linenr = 1
+
 autocmd! User GoyoEnter nested call <SID>goyo_enter()
 autocmd! User GoyoLeave nested call <SID>goyo_leave()
 " }}}
@@ -261,8 +249,7 @@ nnoremap <C-p> :cprev<cr>z.
 vnoremap <C-r> "hy:%s/<C-r>h//g<left><left>
 " }}}
 " Coding {{{
-au BufNewFile,BufRead *.cpp setl sw=2
-au BufNewFile,BufRead *.asm set ft=nasm sw=8 ts=8 tw=90
+autocmd BufNewFile,BufRead *.asm set ft=nasm sw=8 ts=8 tw=90
 " }}}
 " Text {{{
 " Spellcheck {{{
@@ -307,8 +294,7 @@ augroup CloseLoclistWindowGroup
     autocmd QuitPre * if empty(&buftype) | lclose | endif
 augroup END
 
-
-au BufNewFile,BufRead *.tikz set filetype=tex
+autocmd BufNewFile,BufRead *.tikz set filetype=tex
 
 let g:vimtex_compiler_latexmk = {
         \ 'build_dir' : 'build',
@@ -355,13 +341,14 @@ function! s:RemoveDiacritics(line1, line2)
   let all = join(getline(a:line1, a:line2), "\n")
   call setline(a:line1, split(tr(all, diacs, repls), "\n"))
 endfunction
+
 command! -range=% RemoveDiacritics call s:RemoveDiacritics(<line1>, <line2>)
 " }}}
 " }}}
 " Misc {{{
 let g:GPGDefaultRecipients = ['zplhatesbananas@gmail.com']
 
-au FileType vim set fo-=c fo-=r fo-=o
+autocmd FileType vim set fo-=c fo-=r fo-=o
 
 " Create parent directory on save 
 " https://stackoverflow.com/questions/4292733/vim-creating-parent-directories-on-save
@@ -373,6 +360,7 @@ function s:MkNonExDir(file, buf)
         endif
     endif
 endfunction
+
 augroup BWCCreateDir
     autocmd!
     autocmd BufWritePre * :call s:MkNonExDir(expand('<afile>'), +expand('<abuf>'))
