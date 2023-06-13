@@ -98,8 +98,7 @@ Plug 'jamessan/vim-gnupg'
 Plug 'junegunn/vim-peekaboo'
 Plug 'mbbill/undotree'
 Plug 'tpope/vim-surround'
-Plug 'jiangmiao/auto-pairs'
-Plug 'altercation/vim-colors-solarized'
+Plug 'gruvbox-community/gruvbox'
 
 if has('python3')
     Plug 'SirVer/ultisnips'
@@ -112,9 +111,9 @@ filetype plugin indent on
 set listchars=tab:▸\ ,eol:¬
 
 set t_Co=256
-colorscheme solarized
+let g:gruvbox_guisp_fallback='bg'
+colorscheme gruvbox
 set background=dark
-call togglebg#map("<F5>")
 set notermguicolors
 
 " Disable bells
@@ -280,6 +279,7 @@ let g:vim_markdown_new_list_item_indent = 0
 
 autocmd FileType markdown call NoIndent()
 autocmd FileType markdown setl textwidth=79 shiftwidth=2
+autocmd BufNewFile,BufRead **/_posts/* set spell spelllang=en_us
 " }}}
 " LaTeX (vimtex) {{{
 let g:vimtex_motion_matchparen = 0
@@ -346,6 +346,9 @@ command! -range=% RemoveDiacritics call s:RemoveDiacritics(<line1>, <line2>)
 " }}}
 " }}}
 " Misc {{{
+" Fix syntax highlighter not processing blocks of code properly
+autocmd BufEnter * :syntax sync fromstart
+
 let g:GPGDefaultRecipients = ['zplhatesbananas@gmail.com']
 
 autocmd FileType vim set fo-=c fo-=r fo-=o
